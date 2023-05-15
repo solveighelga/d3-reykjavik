@@ -6,6 +6,19 @@
   padding: 6rem;
   min-height: 100vh;
 }
+.grid .tick {
+  stroke: lightgrey;
+  opacity: 0.7;
+}
+.grid path {
+    stroke-width: 0;
+}
+.wrapper {
+  width:872px;
+  height: 662px;
+  background-color: #fff;
+}
+
 
 .description {
   display: inherit;

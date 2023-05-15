@@ -58,8 +58,8 @@ const BarChart = <T,>({
 }: BarChartProps<T>) => {
 	//taking options from the props and setting default values
 	const {
-		width = 400,
-		height = 400,
+		width = 600,
+		height = 600,
 		margin = { top: 20, right: 20, bottom: 20, left: 60 },
 		padding = 0.2,
 		yAxisOptions,
@@ -129,8 +129,16 @@ const BarChart = <T,>({
 	const xAxis = d3.axisBottom(xScale);
 	const yAxis = d3
 		.axisLeft(yScale)
-		.ticks(5)
-		.tickFormat((d) => `${yAxisUnit[0]} ${d} ${yAxisUnit[1]}`);
+		.ticks(10)
+		.tickSize(-width + xScale.bandwidth())
+	
+		//.tickFormat((d) => `${yAxisUnit[0]} ${d} ${yAxisUnit[1]}`);
+
+		
+
+	
+
+
 
 	//all magic happens here
 	useEffect(() => {
@@ -145,7 +153,7 @@ const BarChart = <T,>({
 				.append("rect")
 				.attr("width", width)
 				.attr("height", height)
-				.attr("fill", "lightblue");
+				.attr("fill", "white");
 			//defining the chart canvas
 			selection
 				.append("rect")
@@ -181,7 +189,7 @@ const BarChart = <T,>({
 				//set the y position of the rect element to the scaled value of the data
 				.attr("y", (d) => yScale(yAccessor(d)) + margin.top + margin.bottom)
 				//set the fill color of the rect element to red
-				.attr("fill", "olive");
+				.attr("fill", "#0367E1");
 
 			const yAxisGroup = selection
 				.append("g")

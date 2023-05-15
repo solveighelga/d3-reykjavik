@@ -113,9 +113,12 @@ const data: DataType[] = [
 const dataKarlar = data.filter((item) => item.kyn === "Karlar");
 
 export default function Home() {
+	const width= 872;
+	const height= 662;
 	return (
 		<main className={styles.main}>
-			<h1>D3 Project for Reykjavík</h1>
+			<div className={styles.wrapper}>
+				<h1>D3 Project for Reykjavík</h1>
 			<BarChart
 				title='Data Karlar'
 				data={dataKarlar}
@@ -128,6 +131,7 @@ export default function Home() {
 				}}
 				options={{}}
 			/>
+			</div>
 		</main>
 	);
 }
