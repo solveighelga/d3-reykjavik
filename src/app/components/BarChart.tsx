@@ -60,8 +60,8 @@ const BarChart = <T,>({
 	const {
 		width = 400,
 		height = 400,
-		margin = { top: 20, right: 20, bottom: 20, left: 60 },
-		padding = 0.2,
+		margin = { top: 0, right: 20, bottom: 60, left: 60 },
+		padding = 0.3,
 		yAxisOptions,
 		xAxisOptions,
 	} = options || {};
@@ -69,12 +69,12 @@ const BarChart = <T,>({
 	const {
 		yAxisUnit = ["", ""],
 		yAxisTickSize = 5,
-		yAxisTickPadding = 5,
+		yAxisTickPadding = 40,
 	} = yAxisOptions || {};
 	const {
 		xAxisUnit = ["", ""],
 		xAxisTickSize = 5,
-		xAxisTickPadding = 5,
+		xAxisTickPadding = 100,
 	} = xAxisOptions || {};
 	//calculating the chart area width and height
 
@@ -126,10 +126,15 @@ const BarChart = <T,>({
 		.paddingOuter(paddingObj.outer);
 
 	//define the axis
-	const xAxis = d3.axisBottom(xScale);
+	const xAxis = d3.axisBottom(xScale)
+		.tickSize(0)
+		.tickPadding(15);
+		
 	const yAxis = d3
 		.axisLeft(yScale)
 		.ticks(5)
+		.tickSize(-width + xScale.bandwidth()) // extending the tick to the length of the width
+		.tickPadding(15) // padding between numbers and ticks
 		.tickFormat((d) => `${yAxisUnit[0]} ${d} ${yAxisUnit[1]}`);
 
 	//all magic happens here
@@ -153,6 +158,30 @@ const BarChart = <T,>({
 				.attr("height", chartHeight)
 				.attr("fill", "white")
 				.attr("transform", `translate(${margin.left}, ${margin.top})`);
+
+			// Y-axis ticks
+			selection
+				.selectAll(".y-axis .tick line")
+				.style("fill", "red"); // Set the desired color
+
+			// X-axis text
+			selection
+				.append("text")
+				.text("Ártal")
+				.attr("x", chartWidth / 2 + margin.left) // Adjust the x position as needed
+				.attr("y", height - margin.bottom + yAxisTickPadding) // Adjust the y position as needed
+				.attr("text-anchor", "middle")
+				.attr("fill", "black");
+
+			// Y-axis text
+			selection
+				.append("text")
+				.text("Fjöldi á ári")
+				.attr("x", - margin.left - xAxisTickPadding ) // Adjust the x position as needed
+				.attr("y", -margin.top + 40) // Adjust the y position as needed
+				.attr("text-anchor", "middle")
+				.attr("fill", "black")
+				.attr("transform", `rotate(-90)`);
 
 			selection
 				.append("g")
@@ -181,7 +210,9 @@ const BarChart = <T,>({
 				//set the y position of the rect element to the scaled value of the data
 				.attr("y", (d) => yScale(yAccessor(d)) + margin.top + margin.bottom)
 				//set the fill color of the rect element to red
-				.attr("fill", "olive");
+				.attr("fill", "rgba(3, 103, 225, 1)")
+				.style("stroke", "rgba(42, 43, 44, 1)")
+				.style('stroke-width', '1');
 
 			const yAxisGroup = selection
 				.append("g")
