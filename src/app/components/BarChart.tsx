@@ -71,13 +71,13 @@ const BarChart = <T,>({
 
 	const {
 		yAxisUnit = ["", ""],
-		yAxisTickSize = - chartWidth,
-		yAxisTickPadding = 15,
+		yAxisTickSize = - chartWidth, // extending the tick to the length of the width
+		yAxisTickPadding = 16, // padding between numbers and ticks
 	} = yAxisOptions || {};
 	const {
 		xAxisUnit = ["", ""],
-		xAxisTickSize = 0,
-		xAxisTickPadding = 16,
+		xAxisTickSize = 0, // no ticks will appear on the graph
+		xAxisTickPadding = 16, // padding between numbers and ticks
 	} = xAxisOptions || {};
 	//calculating the chart area width and height
 
@@ -107,6 +107,7 @@ const BarChart = <T,>({
 	// 	null,
 	// 	undefined
 	// >>(null);
+	
 	//define a YScale to scale the data to the svg canvas height
 	const yScale = d3
 		.scaleLinear()
@@ -135,8 +136,8 @@ const BarChart = <T,>({
 	const yAxis = d3
 		.axisLeft(yScale)
 		.ticks(5)
-		.tickSize(yAxisTickSize) // extending the tick to the length of the width
-		.tickPadding(yAxisTickPadding) // padding between numbers and ticks
+		.tickSize(yAxisTickSize)
+		.tickPadding(yAxisTickPadding)
 		.tickFormat((d) => `${yAxisUnit[0]} ${d} ${yAxisUnit[1]}`);
 
 	//all magic happens here
@@ -155,10 +156,10 @@ const BarChart = <T,>({
 				.attr("fill", "lightblue");
 
 
-			// // Y-axis ticks
-			// selection
-			// 	.selectAll(".y-axis .tick line")
-			// 	.style("fill", "red"); // Set the desired color
+			// Y-axis ticks
+			selection
+				.selectAll(".y-axis .tick line")
+				.style("fill", "red"); // Set the desired color
 
 			//defining the chart canvas
 			selection
@@ -190,7 +191,13 @@ const BarChart = <T,>({
 			selection
 				.append("g")
 				.call(yAxis)
-				.attr("transform", `translate(${margin.left}, ${margin.top})`);
+				.attr("transform", `translate(${margin.left}, ${margin.top})`)
+				.selectAll('.tick line')
+				.attr("stroke", "rgba(227, 229, 231, 1)");
+
+			selection
+			.selectAll('.domain')
+			.attr('stroke', 'none');
 			
 			selection
 				.append("g")
@@ -222,6 +229,16 @@ const BarChart = <T,>({
 				.attr("fill", "rgba(3, 103, 225, 1)")
 				.style("stroke", "rgba(42, 43, 44, 1)")
 				.style('stroke-width', '1');
+
+
+
+
+				// .append("text")
+				// 	.text((d) => d)
+				// 	.attr("x", (d) => xScale(xAccessor(d)) + xScale.bandwidth() / 2)
+				// 	.attr("y", (d) => yScale(yAccessor(d)) + margin.top + margin.bottom)
+				// 	.attr("text-anchor", "middle")
+				// 	.attr("fill", "black");
 
 
 			const xAxisGroup = selection
