@@ -151,6 +151,13 @@ const BarChart = <T,>({
 				.attr("width", width)
 				.attr("height", height)
 				.attr("fill", "lightblue");
+
+
+			// // Y-axis ticks
+			// selection
+			// 	.selectAll(".y-axis .tick line")
+			// 	.style("fill", "red"); // Set the desired color
+
 			//defining the chart canvas
 			selection
 				.append("rect")
@@ -158,11 +165,6 @@ const BarChart = <T,>({
 				.attr("height", chartHeight)
 				.attr("fill", "white")
 				.attr("transform", `translate(${margin.left}, ${margin.top})`);
-
-			// Y-axis ticks
-			selection
-				.selectAll(".y-axis .tick line")
-				.style("fill", "red"); // Set the desired color
 
 			// X-axis text
 			selection
@@ -183,6 +185,11 @@ const BarChart = <T,>({
 				.attr("fill", "black")
 				.attr("transform", `rotate(-90)`);
 
+			selection
+				.append("g")
+				.call(yAxis)
+				.attr("transform", `translate(${margin.left}, ${margin.top})`);
+			
 			selection
 				.append("g")
 				.attr("transform", `translate(${margin.left},-${margin.bottom})`)
@@ -209,15 +216,12 @@ const BarChart = <T,>({
 				})
 				//set the y position of the rect element to the scaled value of the data
 				.attr("y", (d) => yScale(yAccessor(d)) + margin.top + margin.bottom)
-				//set the fill color of the rect element to red
+				//set the fill color of the rect element to blue
 				.attr("fill", "rgba(3, 103, 225, 1)")
 				.style("stroke", "rgba(42, 43, 44, 1)")
 				.style('stroke-width', '1');
 
-			const yAxisGroup = selection
-				.append("g")
-				.call(yAxis)
-				.attr("transform", `translate(${margin.left}, ${margin.top})`);
+
 			const xAxisGroup = selection
 				.append("g")
 				.attr("class", "x-axis")
