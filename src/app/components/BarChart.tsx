@@ -243,25 +243,25 @@ const BarChart = <T, K>({
 					//as it is here
 					//xScale(xAccessor(d))!;
 				})
+				
 				//set the y position of the rect element to the scaled value of the data
 				.attr("y", (d) => yScale(yAccessor(d)) + margin.top + margin.bottom)
 				.attr("transform", `translate(${margin.left},-${margin.bottom})`)
 				.attr("height", (d) => chartHeight - yScale(yAccessor(d)))
 				//set the width of the rect element to 20 - constant
-
 				//set the fill color of the rect element to blue
 				.attr("fill", "rgba(3, 103, 225, 1)")
 				.style("stroke", "rgba(42, 43, 44, 1)")
 				.style("stroke-width", "1");
 
-
-
-				// .append("text")
-				// 	.text((d) => d)
-				// 	.attr("x", (d) => xScale(xAccessor(d)) + xScale.bandwidth() / 2)
-				// 	.attr("y", (d) => yScale(yAccessor(d)) + margin.top + margin.bottom)
-				// 	.attr("text-anchor", "middle")
-				// 	.attr("fill", "black");
+				// selection
+				// 	.selectAll(".bar")
+				// 	.append("text")
+				// 	.text ((d) => d) // Set the text content to the data value or modify as needed
+				// 	.attr("x", (d) => xScale(xAccessor(d)) + xScale.bandwidth() / 2) // Position the text in the center of the rect
+				// 	.attr("y", (d) => yScale(yAccessor(d)) + margin.top + margin.bottom) // Adjust the y position as needed
+				// 	.attr("text-anchor", "middle") // Center the text horizontally
+				// 	.attr("fill", "red"); // Set the text color or modify as needed
 
 
 			const xAxisGroup = selection
