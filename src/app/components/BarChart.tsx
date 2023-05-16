@@ -66,20 +66,22 @@ const BarChart = <T,>({
 		xAxisOptions,
 	} = options || {};
 
+	const chartWidth = width - margin.left - margin.right;
+	const chartHeight = height - margin.top - margin.bottom;
+
 	const {
 		yAxisUnit = ["", ""],
-		yAxisTickSize = 5,
-		yAxisTickPadding = 40,
+		yAxisTickSize = - chartWidth,
+		yAxisTickPadding = 15,
 	} = yAxisOptions || {};
 	const {
 		xAxisUnit = ["", ""],
-		xAxisTickSize = 5,
-		xAxisTickPadding = 100,
+		xAxisTickSize = 0,
+		xAxisTickPadding = 16,
 	} = xAxisOptions || {};
 	//calculating the chart area width and height
 
-	const chartWidth = width - margin.left - margin.right;
-	const chartHeight = height - margin.top - margin.bottom;
+	
 
 	//either serving different padding values for inner and outer or just one value for both
 	const paddingObj =
@@ -127,14 +129,14 @@ const BarChart = <T,>({
 
 	//define the axis
 	const xAxis = d3.axisBottom(xScale)
-		.tickSize(0)
-		.tickPadding(15);
+		.tickSize(xAxisTickSize)
+		.tickPadding(xAxisTickPadding);
 		
 	const yAxis = d3
 		.axisLeft(yScale)
 		.ticks(5)
-		.tickSize(-width + xScale.bandwidth()) // extending the tick to the length of the width
-		.tickPadding(15) // padding between numbers and ticks
+		.tickSize(yAxisTickSize) // extending the tick to the length of the width
+		.tickPadding(yAxisTickPadding) // padding between numbers and ticks
 		.tickFormat((d) => `${yAxisUnit[0]} ${d} ${yAxisUnit[1]}`);
 
 	//all magic happens here
@@ -171,7 +173,7 @@ const BarChart = <T,>({
 				.append("text")
 				.text("Ártal")
 				.attr("x", chartWidth / 2 + margin.left) // Adjust the x position as needed
-				.attr("y", height - margin.bottom + yAxisTickPadding) // Adjust the y position as needed
+				.attr("y", chartHeight - margin.top + xAxisTickPadding + xAxisTickSize + 36) // Adjust the y position as needed
 				.attr("text-anchor", "middle")
 				.attr("fill", "black");
 
@@ -179,8 +181,8 @@ const BarChart = <T,>({
 			selection
 				.append("text")
 				.text("Fjöldi á ári")
-				.attr("x", - margin.left - xAxisTickPadding ) // Adjust the x position as needed
-				.attr("y", -margin.top + 40) // Adjust the y position as needed
+				.attr("x", - (chartHeight / 2) ) // Adjust the x position as needed
+				.attr("y", yAxisTickPadding ) // Adjust the y position as needed
 				.attr("text-anchor", "middle")
 				.attr("fill", "black")
 				.attr("transform", `rotate(-90)`);
