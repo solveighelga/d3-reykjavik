@@ -50,7 +50,7 @@ interface BarChartProps<T> {
 	options?: BarChartOptions;
 }
 
-const BarChart = <T,>({
+const BarChart = <T, K>({
 	data,
 	xAccessor,
 	yAccessor,
@@ -66,20 +66,20 @@ const BarChart = <T,>({
 		xAxisOptions,
 	} = options || {};
 
+	const chartWidth = width - margin.left - margin.right;
+	const chartHeight = height - margin.top - margin.bottom;
+
 	const {
 		yAxisUnit = ["", ""],
-		yAxisTickSize = 5,
-		yAxisTickPadding = 40,
+		yAxisTickSize = - chartWidth, // extending the tick to the length of the width
+		yAxisTickPadding = 16, // padding between numbers and ticks
 	} = yAxisOptions || {};
 	const {
 		xAxisUnit = ["", ""],
-		xAxisTickSize = 5,
-		xAxisTickPadding = 100,
+		xAxisTickSize = 0, // no ticks will appear on the graph
+		xAxisTickPadding = 16, // padding between numbers and ticks
 	} = xAxisOptions || {};
 	//calculating the chart area width and height
-
-	const chartWidth = width - margin.left - margin.right;
-	const chartHeight = height - margin.top - margin.bottom;
 
 	//either serving different padding values for inner and outer or just one value for both
 	const paddingObj =
@@ -99,12 +99,6 @@ const BarChart = <T,>({
 		undefined
 	>>(null);
 
-	// const [chartSelection, setChartSelection] = useState<null | d3.Selection<
-	// 	SVGSVGElement | null,
-	// 	unknown,
-	// 	null,
-	// 	undefined
-	// >>(null);
 	//define a YScale to scale the data to the svg canvas height
 	const yScale = d3
 		.scaleLinear()
@@ -126,15 +120,17 @@ const BarChart = <T,>({
 		.paddingOuter(paddingObj.outer);
 
 	//define the axis
-	const xAxis = d3.axisBottom(xScale)
-		.tickSize(0)
-		.tickPadding(15);
-		
+	const xAxis = d3
+		.axisBottom(xScale)
+		.tickSize(xAxisTickSize)
+		.tickPadding(xAxisTickPadding)
+		.tickFormat((d) => `${xAxisUnit[0]} ${d} ${xAxisUnit[1]}`);
+
 	const yAxis = d3
 		.axisLeft(yScale)
 		.ticks(5)
-		.tickSize(-width + xScale.bandwidth()) // extending the tick to the length of the width
-		.tickPadding(15) // padding between numbers and ticks
+		.tickSize(yAxisTickSize)
+		.tickPadding(yAxisTickPadding)
 		.tickFormat((d) => `${yAxisUnit[0]} ${d} ${yAxisUnit[1]}`);
 
 		
@@ -150,23 +146,25 @@ const BarChart = <T,>({
 		} else {
 			//defining the chart container
 			selection
-				.attr("class", "chart-container")
+				.attr("class", "svg-container")
 				.attr("width", width)
 				.attr("height", height)
 				.append("rect")
+				.attr("class", "svg-background")
 				.attr("width", width)
 				.attr("height", height)
 				.attr("fill", "lightblue");
 
 
-			// // Y-axis ticks
-			// selection
-			// 	.selectAll(".y-axis .tick line")
-			// 	.style("fill", "red"); // Set the desired color
+			// Y-axis ticks
+			selection
+				.selectAll(".y-axis .tick line")
+				.style("fill", "red"); // Set the desired color
 
 			//defining the chart canvas
 			selection
 				.append("rect")
+				.attr("class", "chart-canvas")
 				.attr("width", chartWidth)
 				.attr("height", chartHeight)
 				.attr("fill", "white")
@@ -177,7 +175,10 @@ const BarChart = <T,>({
 				.append("text")
 				.text("Ártal")
 				.attr("x", chartWidth / 2 + margin.left) // Adjust the x position as needed
-				.attr("y", height - margin.bottom + yAxisTickPadding) // Adjust the y position as needed
+				.attr(
+					"y",
+					chartHeight - margin.top + xAxisTickPadding + xAxisTickSize + 36
+				) // Adjust the y position as needed
 				.attr("text-anchor", "middle")
 				.attr("fill", "black");
 
@@ -185,22 +186,26 @@ const BarChart = <T,>({
 			selection
 				.append("text")
 				.text("Fjöldi á ári")
-				.attr("x", - margin.left - xAxisTickPadding ) // Adjust the x position as needed
-				.attr("y", -margin.top + 40) // Adjust the y position as needed
+				.attr("x", -(chartHeight / 2)) // Adjust the x position as needed
+				.attr("y", yAxisTickPadding) // Adjust the y position as needed
 				.attr("text-anchor", "middle")
-				.attr("fill", "black")
 				.attr("transform", `rotate(-90)`);
 
 			selection
 				.append("g")
 				.call(yAxis)
+				.attr("class", "x-axis")
+				.style('color', 'rgba(114, 116, 119, 1)')
 				.attr("transform", `translate(${margin.left}, ${margin.top})`)
-				.selectAll('.tick line',)
-				.attr('stroke', 'grey');
+				.selectAll('.tick line')
+				.attr("stroke", "rgba(227, 229, 231, 1)");
+
+			selection
+				.selectAll('.domain')
+				.attr('stroke', 'none');
 			
 			selection
 				.append("g")
-				.attr("transform", `translate(${margin.left},-${margin.bottom})`)
 				.selectAll("rect")
 				//join the data to the selection
 				.data(data)
@@ -208,10 +213,32 @@ const BarChart = <T,>({
 				.enter()
 				//append a rect element to the selection
 				.append("rect")
-				//set the width of the rect element to 20 - constant
+				.attr("class", "bar")
+				.attr("height", "0")
+				.attr("transform", `translate(${margin.left},-${margin.bottom})`)
+				.attr("y", chartHeight + margin.top)
 				.attr("width", xScale.bandwidth())
 				//set the height of the rect element to the scaled value of the data
-				.attr("height", (d) => chartHeight - yScale(yAccessor(d)))
+				.attr("x", (d) => {
+					//instead of this block of code we can use bang operator since we know that devs are not going to pass null values
+					const x = xScale(xAccessor(d));
+					if (x) {
+						return x;
+					}
+					return null;
+					//as it is here
+					//xScale(xAccessor(d))!;
+				})
+				//set the y position of the rect element to the scaled value of the data
+				.attr("y", (d) => chartHeight + margin.bottom + margin.top)
+				.attr("width", xScale.bandwidth())
+				//set the height of the rect element to the scaled value of the data
+				.transition()
+				.delay((d, i) => i * 100)
+				.duration(1000)
+				.ease(d3.easeBounce)
+				.attr("width", xScale.bandwidth())
+				//set the height of the rect element to the scaled value of the data
 				.attr("x", (d) => {
 					//instead of this block of code we can use bang operator since we know that devs are not going to pass null values
 					const x = xScale(xAccessor(d));
@@ -224,20 +251,36 @@ const BarChart = <T,>({
 				})
 				//set the y position of the rect element to the scaled value of the data
 				.attr("y", (d) => yScale(yAccessor(d)) + margin.top + margin.bottom)
+				.attr("transform", `translate(${margin.left},-${margin.bottom})`)
+				.attr("height", (d) => chartHeight - yScale(yAccessor(d)))
+				//set the width of the rect element to 20 - constant
+
 				//set the fill color of the rect element to blue
 				.attr("fill", "rgba(3, 103, 225, 1)")
 				.style("stroke", "rgba(42, 43, 44, 1)")
-				.style('stroke-width', '1');
+				.style("stroke-width", "1");
+
+
+
+				// .append("text")
+				// 	.text((d) => d)
+				// 	.attr("x", (d) => xScale(xAccessor(d)) + xScale.bandwidth() / 2)
+				// 	.attr("y", (d) => yScale(yAccessor(d)) + margin.top + margin.bottom)
+				// 	.attr("text-anchor", "middle")
+				// 	.attr("fill", "black");
 
 
 			const xAxisGroup = selection
 				.append("g")
 				.attr("class", "x-axis")
+				.style('color', 'rgba(114, 116, 119, 1)')
 				.attr(
 					"transform",
 					`translate(${margin.left}, ${chartHeight + margin.top})`
 				)
-				.call(xAxis);
+				.call(xAxis)
+				.selectAll('.domain')
+				.attr('stroke', 'rgba(114, 116, 119, 1)');
 		}
 	}, [selection]);
 
