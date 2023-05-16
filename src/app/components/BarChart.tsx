@@ -71,13 +71,13 @@ const BarChart = <T, K>({
 
 	const {
 		yAxisUnit = ["", ""],
-		yAxisTickSize = -chartWidth,
-		yAxisTickPadding = 15,
+		yAxisTickSize = - chartWidth, // extending the tick to the length of the width
+		yAxisTickPadding = 16, // padding between numbers and ticks
 	} = yAxisOptions || {};
 	const {
 		xAxisUnit = ["", ""],
-		xAxisTickSize = 0,
-		xAxisTickPadding = 16,
+		xAxisTickSize = 0, // no ticks will appear on the graph
+		xAxisTickPadding = 16, // padding between numbers and ticks
 	} = xAxisOptions || {};
 	//calculating the chart area width and height
 
@@ -129,8 +129,8 @@ const BarChart = <T, K>({
 	const yAxis = d3
 		.axisLeft(yScale)
 		.ticks(5)
-		.tickSize(yAxisTickSize) // extending the tick to the length of the width
-		.tickPadding(yAxisTickPadding) // padding between numbers and ticks
+		.tickSize(yAxisTickSize)
+		.tickPadding(yAxisTickPadding)
 		.tickFormat((d) => `${yAxisUnit[0]} ${d} ${yAxisUnit[1]}`);
 
 	//all magic happens here
@@ -149,10 +149,11 @@ const BarChart = <T, K>({
 				.attr("height", height)
 				.attr("fill", "lightblue");
 
-			// // Y-axis ticks
-			// selection
-			// 	.selectAll(".y-axis .tick line")
-			// 	.style("fill", "red"); // Set the desired color
+
+			// Y-axis ticks
+			selection
+				.selectAll(".y-axis .tick line")
+				.style("fill", "red"); // Set the desired color
 
 			//defining the chart canvas
 			selection
@@ -182,17 +183,21 @@ const BarChart = <T, K>({
 				.attr("x", -(chartHeight / 2)) // Adjust the x position as needed
 				.attr("y", yAxisTickPadding) // Adjust the y position as needed
 				.attr("text-anchor", "middle")
-				.attr("fill", "black")
 				.attr("transform", `rotate(-90)`);
 
 			selection
 				.append("g")
 				.call(yAxis)
-				.attr("color", "rgba(42, 43, 44, 1)")
+				.attr("class", "x-axis")
+				.style('color', 'rgba(114, 116, 119, 1)')
 				.attr("transform", `translate(${margin.left}, ${margin.top})`)
-				.selectAll(".tick line")
-				.attr("stroke", "rgba(42, 43, 44, 0.1)");
+				.selectAll('.tick line')
+				.attr("stroke", "rgba(227, 229, 231, 1)");
 
+			selection
+				.selectAll('.domain')
+				.attr('stroke', 'none');
+			
 			selection
 				.append("g")
 				.selectAll("rect")
@@ -249,15 +254,27 @@ const BarChart = <T, K>({
 				.style("stroke", "rgba(42, 43, 44, 1)")
 				.style("stroke-width", "1");
 
+
+
+				// .append("text")
+				// 	.text((d) => d)
+				// 	.attr("x", (d) => xScale(xAccessor(d)) + xScale.bandwidth() / 2)
+				// 	.attr("y", (d) => yScale(yAccessor(d)) + margin.top + margin.bottom)
+				// 	.attr("text-anchor", "middle")
+				// 	.attr("fill", "black");
+
+
 			const xAxisGroup = selection
 				.append("g")
 				.attr("class", "x-axis")
+				.style('color', 'rgba(114, 116, 119, 1)')
 				.attr(
 					"transform",
 					`translate(${margin.left}, ${chartHeight + margin.top})`
 				)
 				.call(xAxis)
-				.attr("color", "rgba(42, 43, 44, 1)");
+				.selectAll('.domain')
+				.attr('stroke', 'rgba(114, 116, 119, 1)');
 		}
 	}, [selection]);
 
