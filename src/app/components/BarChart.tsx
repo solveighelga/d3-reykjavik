@@ -35,7 +35,7 @@ export interface BarChartOptions {
 	xAxisOptions?: xAxisOptions;
 }
 
-interface BarChartProps<T> {
+export interface BarChartProps<T, K extends keyof T> {
 	//Dataset to be visualized.
 	data: T[];
 	//Title of the chart.
@@ -43,19 +43,19 @@ interface BarChartProps<T> {
 	//Summary of the chart.
 	summary: string;
 	//Function to access the x value of the data. This function must return the x value as a string.If we work on data numbers please just convert them to string. (e.g. xAccessor: (d) => d.x.toString())
-	xAccessor: (d: T) => string;
+	xAccessor: (d: T) => T[K] extends string ? T[K] : any;
 	//Function to access the y value of the data. This function should return a number.
-	yAccessor: (d: T) => number;
+	yAccessor: (d: T) => T[K] extends number ? T[K] : any;
 	//Options to customize the chart.
 	options?: BarChartOptions;
 }
 
-const BarChart = <T, K>({
+export const BarChart = <T, K extends keyof T>({
 	data,
 	xAccessor,
 	yAccessor,
 	options,
-}: BarChartProps<T>) => {
+}: BarChartProps<T, K>) => {
 	//taking options from the props and setting default values
 	const {
 		width = 400,
@@ -71,7 +71,7 @@ const BarChart = <T, K>({
 
 	const {
 		yAxisUnit = ["", ""],
-		yAxisTickSize = - chartWidth, // extending the tick to the length of the width
+		yAxisTickSize = -chartWidth, // extending the tick to the length of the width
 		yAxisTickPadding = 16, // padding between numbers and ticks
 	} = yAxisOptions || {};
 	const {
@@ -149,11 +149,8 @@ const BarChart = <T, K>({
 				.attr("height", height)
 				.attr("fill", "lightblue");
 
-
 			// Y-axis ticks
-			selection
-				.selectAll(".y-axis .tick line")
-				.style("fill", "red"); // Set the desired color
+			selection.selectAll(".y-axis .tick line").style("fill", "red"); // Set the desired color
 
 			//defining the chart canvas
 			selection
@@ -189,15 +186,13 @@ const BarChart = <T, K>({
 				.append("g")
 				.call(yAxis)
 				.attr("class", "x-axis")
-				.style('color', 'rgba(114, 116, 119, 1)')
+				.style("color", "rgba(114, 116, 119, 1)")
 				.attr("transform", `translate(${margin.left}, ${margin.top})`)
-				.selectAll('.tick line')
+				.selectAll(".tick line")
 				.attr("stroke", "rgba(227, 229, 231, 1)");
 
-			selection
-				.selectAll('.domain')
-				.attr('stroke', 'none');
-			
+			selection.selectAll(".domain").attr("stroke", "none");
+
 			selection
 				.append("g")
 				.selectAll("rect")
@@ -254,27 +249,24 @@ const BarChart = <T, K>({
 				.style("stroke", "rgba(42, 43, 44, 1)")
 				.style("stroke-width", "1");
 
-
-
-				// .append("text")
-				// 	.text((d) => d)
-				// 	.attr("x", (d) => xScale(xAccessor(d)) + xScale.bandwidth() / 2)
-				// 	.attr("y", (d) => yScale(yAccessor(d)) + margin.top + margin.bottom)
-				// 	.attr("text-anchor", "middle")
-				// 	.attr("fill", "black");
-
+			// .append("text")
+			// 	.text((d) => d)
+			// 	.attr("x", (d) => xScale(xAccessor(d)) + xScale.bandwidth() / 2)
+			// 	.attr("y", (d) => yScale(yAccessor(d)) + margin.top + margin.bottom)
+			// 	.attr("text-anchor", "middle")
+			// 	.attr("fill", "black");
 
 			const xAxisGroup = selection
 				.append("g")
 				.attr("class", "x-axis")
-				.style('color', 'rgba(114, 116, 119, 1)')
+				.style("color", "rgba(114, 116, 119, 1)")
 				.attr(
 					"transform",
 					`translate(${margin.left}, ${chartHeight + margin.top})`
 				)
 				.call(xAxis)
-				.selectAll('.domain')
-				.attr('stroke', 'rgba(114, 116, 119, 1)');
+				.selectAll(".domain")
+				.attr("stroke", "rgba(114, 116, 119, 1)");
 		}
 	}, [selection]);
 
@@ -287,5 +279,3 @@ const addRandomData = () => {
 		yValue: prompt("Enter the value for y axis"),
 	};
 };
-
-export default BarChart;
