@@ -6,13 +6,12 @@
   padding: 6rem;
   min-height: 100vh;
 }
-.grid .tick {
-  stroke: lightgrey;
-  opacity: 0.7;
-}
-.grid path {
-    stroke-width: 0;
-}
+/*line.stroke {
+  stroke: black;
+  opacity: 1;
+}*/
+
+
 .wrapper {
   width:872px;
   height: 662px;

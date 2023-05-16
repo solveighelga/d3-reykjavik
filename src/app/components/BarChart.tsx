@@ -132,7 +132,7 @@ const BarChart = <T,>({
 		.ticks(10)
 		.tickSize(-width + xScale.bandwidth())
 	
-		//.tickFormat((d) => `${yAxisUnit[0]} ${d} ${yAxisUnit[1]}`);
+		.tickFormat((d) => `${yAxisUnit[0]} ${d} ${yAxisUnit[1]}`);
 
 		
 
