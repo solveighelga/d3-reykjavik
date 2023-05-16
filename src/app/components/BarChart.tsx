@@ -50,7 +50,7 @@ interface BarChartProps<T> {
 	options?: BarChartOptions;
 }
 
-const BarChart = <T,>({
+const BarChart = <T, K>({
 	data,
 	xAccessor,
 	yAccessor,
@@ -81,8 +81,6 @@ const BarChart = <T,>({
 	} = xAxisOptions || {};
 	//calculating the chart area width and height
 
-	
-
 	//either serving different padding values for inner and outer or just one value for both
 	const paddingObj =
 		typeof padding === "number"
@@ -101,13 +99,6 @@ const BarChart = <T,>({
 		undefined
 	>>(null);
 
-	// const [chartSelection, setChartSelection] = useState<null | d3.Selection<
-	// 	SVGSVGElement | null,
-	// 	unknown,
-	// 	null,
-	// 	undefined
-	// >>(null);
-	
 	//define a YScale to scale the data to the svg canvas height
 	const yScale = d3
 		.scaleLinear()
@@ -129,10 +120,12 @@ const BarChart = <T,>({
 		.paddingOuter(paddingObj.outer);
 
 	//define the axis
-	const xAxis = d3.axisBottom(xScale)
+	const xAxis = d3
+		.axisBottom(xScale)
 		.tickSize(xAxisTickSize)
-		.tickPadding(xAxisTickPadding);
-		
+		.tickPadding(xAxisTickPadding)
+		.tickFormat((d) => `${xAxisUnit[0]} ${d} ${xAxisUnit[1]}`);
+
 	const yAxis = d3
 		.axisLeft(yScale)
 		.ticks(5)
@@ -147,10 +140,11 @@ const BarChart = <T,>({
 		} else {
 			//defining the chart container
 			selection
-				.attr("class", "chart-container")
+				.attr("class", "svg-container")
 				.attr("width", width)
 				.attr("height", height)
 				.append("rect")
+				.attr("class", "svg-background")
 				.attr("width", width)
 				.attr("height", height)
 				.attr("fill", "lightblue");
@@ -164,6 +158,7 @@ const BarChart = <T,>({
 			//defining the chart canvas
 			selection
 				.append("rect")
+				.attr("class", "chart-canvas")
 				.attr("width", chartWidth)
 				.attr("height", chartHeight)
 				.attr("fill", "white")
@@ -174,7 +169,10 @@ const BarChart = <T,>({
 				.append("text")
 				.text("Ártal")
 				.attr("x", chartWidth / 2 + margin.left) // Adjust the x position as needed
-				.attr("y", chartHeight - margin.top + xAxisTickPadding + xAxisTickSize + 36) // Adjust the y position as needed
+				.attr(
+					"y",
+					chartHeight - margin.top + xAxisTickPadding + xAxisTickSize + 36
+				) // Adjust the y position as needed
 				.attr("text-anchor", "middle")
 				.attr("fill", "black");
 
@@ -182,8 +180,8 @@ const BarChart = <T,>({
 			selection
 				.append("text")
 				.text("Fjöldi á ári")
-				.attr("x", - (chartHeight / 2) ) // Adjust the x position as needed
-				.attr("y", yAxisTickPadding ) // Adjust the y position as needed
+				.attr("x", -(chartHeight / 2)) // Adjust the x position as needed
+				.attr("y", yAxisTickPadding) // Adjust the y position as needed
 				.attr("text-anchor", "middle")
 				.attr("transform", `rotate(-90)`);
 
@@ -202,7 +200,6 @@ const BarChart = <T,>({
 			
 			selection
 				.append("g")
-				.attr("transform", `translate(${margin.left},-${margin.bottom})`)
 				.selectAll("rect")
 				//join the data to the selection
 				.data(data)
@@ -210,10 +207,32 @@ const BarChart = <T,>({
 				.enter()
 				//append a rect element to the selection
 				.append("rect")
-				//set the width of the rect element to 20 - constant
+				.attr("class", "bar")
+				.attr("height", "0")
+				.attr("transform", `translate(${margin.left},-${margin.bottom})`)
+				.attr("y", chartHeight + margin.top)
 				.attr("width", xScale.bandwidth())
 				//set the height of the rect element to the scaled value of the data
-				.attr("height", (d) => chartHeight - yScale(yAccessor(d)))
+				.attr("x", (d) => {
+					//instead of this block of code we can use bang operator since we know that devs are not going to pass null values
+					const x = xScale(xAccessor(d));
+					if (x) {
+						return x;
+					}
+					return null;
+					//as it is here
+					//xScale(xAccessor(d))!;
+				})
+				//set the y position of the rect element to the scaled value of the data
+				.attr("y", (d) => chartHeight + margin.bottom + margin.top)
+				.attr("width", xScale.bandwidth())
+				//set the height of the rect element to the scaled value of the data
+				.transition()
+				.delay((d, i) => i * 100)
+				.duration(1000)
+				.ease(d3.easeBounce)
+				.attr("width", xScale.bandwidth())
+				//set the height of the rect element to the scaled value of the data
 				.attr("x", (d) => {
 					//instead of this block of code we can use bang operator since we know that devs are not going to pass null values
 					const x = xScale(xAccessor(d));
@@ -226,11 +245,14 @@ const BarChart = <T,>({
 				})
 				//set the y position of the rect element to the scaled value of the data
 				.attr("y", (d) => yScale(yAccessor(d)) + margin.top + margin.bottom)
+				.attr("transform", `translate(${margin.left},-${margin.bottom})`)
+				.attr("height", (d) => chartHeight - yScale(yAccessor(d)))
+				//set the width of the rect element to 20 - constant
+
 				//set the fill color of the rect element to blue
 				.attr("fill", "rgba(3, 103, 225, 1)")
 				.style("stroke", "rgba(42, 43, 44, 1)")
-				.style('stroke-width', '1');
-
+				.style("stroke-width", "1");
 
 
 
