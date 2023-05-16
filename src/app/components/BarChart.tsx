@@ -185,19 +185,20 @@ const BarChart = <T,>({
 				.attr("x", - (chartHeight / 2) ) // Adjust the x position as needed
 				.attr("y", yAxisTickPadding ) // Adjust the y position as needed
 				.attr("text-anchor", "middle")
-				.attr("fill", "black")
 				.attr("transform", `rotate(-90)`);
 
 			selection
 				.append("g")
 				.call(yAxis)
+				.attr("class", "x-axis")
+				.style('color', 'rgba(114, 116, 119, 1)')
 				.attr("transform", `translate(${margin.left}, ${margin.top})`)
 				.selectAll('.tick line')
 				.attr("stroke", "rgba(227, 229, 231, 1)");
 
 			selection
-			.selectAll('.domain')
-			.attr('stroke', 'none');
+				.selectAll('.domain')
+				.attr('stroke', 'none');
 			
 			selection
 				.append("g")
@@ -244,11 +245,14 @@ const BarChart = <T,>({
 			const xAxisGroup = selection
 				.append("g")
 				.attr("class", "x-axis")
+				.style('color', 'rgba(114, 116, 119, 1)')
 				.attr(
 					"transform",
 					`translate(${margin.left}, ${chartHeight + margin.top})`
 				)
-				.call(xAxis);
+				.call(xAxis)
+				.selectAll('.domain')
+				.attr('stroke', 'rgba(114, 116, 119, 1)');
 		}
 	}, [selection]);
 
