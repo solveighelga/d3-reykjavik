@@ -117,7 +117,7 @@ export default function Home() {
 	const height= 662;
 	return (
 		<main className={styles.main}>
-			<div className={styles.wrapper}>
+			<div>
 				<h1>D3 Project for Reykjavík</h1>
 			<BarChart
 				title='Data Karlar'
