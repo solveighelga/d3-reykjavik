@@ -38,6 +38,17 @@
   --callout-border-rgb: 172, 175, 176;
   --card-rgb: 180, 185, 188;
   --card-border-rgb: 131, 134, 135;
+
+  /* SVG Colors */
+  --svgContainerColor: lightblue;
+  --chartCanvasColor: white;
+  --svgTextColor:black;
+  --yAxisTickColor:rgba(227, 229, 231, 1);
+  --yAxisTextColor:rgba(114, 116, 119, 1);
+  --xAxisTickColor:rgba(114, 116, 119, 1);
+  --xAxisTextColor:rgba(114, 116, 119, 1);
+  --rectColor:rgba(3, 103, 225, 1);
+  --rectStroke:rgba(42, 43, 44, 1);
 }
 
 @media (prefers-color-scheme: dark) {
