@@ -147,13 +147,7 @@ const BarChart = <T, K>({
 				.attr("class", "svg-background")
 				.attr("width", width)
 				.attr("height", height)
-				.attr("fill", "lightblue");
-
-
-			// Y-axis ticks
-			selection
-				.selectAll(".y-axis .tick line")
-				.style("fill", "red"); // Set the desired color
+				.attr("fill", "var(--svgContainerColor)");
 
 			//defining the chart canvas
 			selection
@@ -161,7 +155,7 @@ const BarChart = <T, K>({
 				.attr("class", "chart-canvas")
 				.attr("width", chartWidth)
 				.attr("height", chartHeight)
-				.attr("fill", "white")
+				.attr("fill", "var(--chartCanvasColor)")
 				.attr("transform", `translate(${margin.left}, ${margin.top})`);
 
 			// X-axis text
@@ -174,7 +168,7 @@ const BarChart = <T, K>({
 					chartHeight - margin.top + xAxisTickPadding + xAxisTickSize + 36
 				) // Adjust the y position as needed
 				.attr("text-anchor", "middle")
-				.attr("fill", "black");
+				.attr("fill", "var(--svgTextColor)");
 
 			// Y-axis text
 			selection
@@ -183,16 +177,17 @@ const BarChart = <T, K>({
 				.attr("x", -(chartHeight / 2)) // Adjust the x position as needed
 				.attr("y", yAxisTickPadding) // Adjust the y position as needed
 				.attr("text-anchor", "middle")
-				.attr("transform", `rotate(-90)`);
+				.attr("transform", `rotate(-90)`)
+				.attr("fill", "var(--svgTextColor)");
 
 			selection
 				.append("g")
 				.call(yAxis)
 				.attr("class", "x-axis")
-				.style('color', 'rgba(114, 116, 119, 1)')
+				.style('color', "var(--yAxisTextColor)")
 				.attr("transform", `translate(${margin.left}, ${margin.top})`)
 				.selectAll('.tick line')
-				.attr("stroke", "rgba(227, 229, 231, 1)");
+				.attr("stroke", "var(--yAxisTickColor)");
 
 			selection
 				.selectAll('.domain')
@@ -243,38 +238,38 @@ const BarChart = <T, K>({
 					//as it is here
 					//xScale(xAccessor(d))!;
 				})
+				
 				//set the y position of the rect element to the scaled value of the data
 				.attr("y", (d) => yScale(yAccessor(d)) + margin.top + margin.bottom)
 				.attr("transform", `translate(${margin.left},-${margin.bottom})`)
 				.attr("height", (d) => chartHeight - yScale(yAccessor(d)))
 				//set the width of the rect element to 20 - constant
-
 				//set the fill color of the rect element to blue
-				.attr("fill", "rgba(3, 103, 225, 1)")
-				.style("stroke", "rgba(42, 43, 44, 1)")
+				.attr("fill", "var(--rectColor)")
+				.style("stroke", "var(--rectStroke)")
 				.style("stroke-width", "1");
 
-
-
-				// .append("text")
-				// 	.text((d) => d)
-				// 	.attr("x", (d) => xScale(xAccessor(d)) + xScale.bandwidth() / 2)
-				// 	.attr("y", (d) => yScale(yAccessor(d)) + margin.top + margin.bottom)
-				// 	.attr("text-anchor", "middle")
-				// 	.attr("fill", "black");
+				// selection
+				// 	.selectAll(".bar")
+				// 	.append("text")
+				// 	.text ((d) => d) // Set the text content to the data value or modify as needed
+				// 	.attr("x", (d) => xScale(xAccessor(d)) + xScale.bandwidth() / 2) // Position the text in the center of the rect
+				// 	.attr("y", (d) => yScale(yAccessor(d)) + margin.top + margin.bottom) // Adjust the y position as needed
+				// 	.attr("text-anchor", "middle") // Center the text horizontally
+				// 	.attr("fill", "red"); // Set the text color or modify as needed
 
 
 			const xAxisGroup = selection
 				.append("g")
 				.attr("class", "x-axis")
-				.style('color', 'rgba(114, 116, 119, 1)')
+				.style('color', "var(--xAxisTextColor)")
 				.attr(
 					"transform",
 					`translate(${margin.left}, ${chartHeight + margin.top})`
 				)
 				.call(xAxis)
 				.selectAll('.domain')
-				.attr('stroke', 'rgba(114, 116, 119, 1)');
+				.attr('stroke', "var(--xAxisTickColor)");
 		}
 	}, [selection]);
 
