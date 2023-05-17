@@ -51,6 +51,8 @@ interface BarChartProps<T> {
 }
 
 const BarChart = <T, K>({
+	summary,
+	title,
 	data,
 	xAccessor,
 	yAccessor,
@@ -58,14 +60,14 @@ const BarChart = <T, K>({
 }: BarChartProps<T>) => {
 	//taking options from the props and setting default values
 	const {
-		width = 400,
-		height = 400,
-		margin = { top: 0, right: 20, bottom: 60, left: 60 },
+		width = 872,
+		height = 662,
+		margin = { top: 40, right: 20, bottom: 60, left: 60 },
 		padding = 0.3,
 		yAxisOptions,
 		xAxisOptions,
 	} = options || {};
-
+	console.log(summary)
 	const chartWidth = width - margin.left - margin.right;
 	const chartHeight = height - margin.top - margin.bottom;
 
@@ -128,7 +130,7 @@ const BarChart = <T, K>({
 
 	const yAxis = d3
 		.axisLeft(yScale)
-		.ticks(5)
+		.ticks(10)
 		.tickSize(yAxisTickSize)
 		.tickPadding(yAxisTickPadding)
 		.tickFormat((d) => `${yAxisUnit[0]} ${d} ${yAxisUnit[1]}`);
@@ -153,13 +155,13 @@ const BarChart = <T, K>({
 				.attr("class", "svg-background")
 				.attr("width", width)
 				.attr("height", height)
-				.attr("fill", "lightblue");
+				.attr("fill", "#fff");
 
 
 			// Y-axis ticks
 			selection
 				.selectAll(".y-axis .tick line")
-				.style("fill", "red"); // Set the desired color
+				//.style("fill", "red"); // Set the desired color
 
 			//defining the chart canvas
 			selection
@@ -177,7 +179,7 @@ const BarChart = <T, K>({
 				.attr("x", chartWidth / 2 + margin.left) // Adjust the x position as needed
 				.attr(
 					"y",
-					chartHeight - margin.top + xAxisTickPadding + xAxisTickSize + 36
+					chartHeight - margin.top + xAxisTickPadding + xAxisTickSize + 96
 				) // Adjust the y position as needed
 				.attr("text-anchor", "middle")
 				.attr("fill", "black");
@@ -203,6 +205,7 @@ const BarChart = <T, K>({
 			selection
 				.selectAll('.domain')
 				.attr('stroke', 'none');
+
 			
 			selection
 				.append("g")
@@ -284,7 +287,11 @@ const BarChart = <T, K>({
 		}
 	}, [selection]);
 
-	return <svg ref={svgRef} />;
+	return <>
+	        <h1>{summary}</h1>
+			<h2>{title}</h2>
+	        <svg ref={svgRef} />
+			</>;
 };
 
 const addRandomData = () => {
