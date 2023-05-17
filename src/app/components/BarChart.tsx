@@ -165,7 +165,40 @@ export const BarChart = <T, K extends keyof T>({
 				.attr("height", chartHeight)
 				.attr("fill", "var(--chartCanvasColor)")
 				.attr("transform", `translate(${margin.left}, ${margin.top})`);
+			
+			selection
+			    .append("g")
+			    .selectAll("text")
+			//join the data to the selection
+			    .data(data)
+			//for each data item that does not have a corresponding element in the selection, create a new element
+			    .enter()
+			//append a rect element to the selection
+			    .append("text")
+				//.attr('transform', `translate(${xScale.bandwidth() /2 - 5})`)
+				//.attr('x', (d) => xScale.bandwidth())
+                //.attr('y', (d) => yScale(yAccessor(d)))
+				.attr('x', (d) => xScale(xAccessor(d))! + xScale.bandwidth() / 2 +55)
+                .attr('y', (d) => yScale(yAccessor(d))! + 25)
+				
+				
+				.text(yAccessor);
 
+			
+			    
+				//.attr("x", '740') // Adjust the x position as needed
+				//.attr(
+					//	"y", '25') // Adjust the y position as needed
+					//.attr('text-anchor', 'middle');
+					
+					//.append(‘text’)
+					//.attr(‘x’, (d) => yScale(yAccessor(d)))
+					// .attr(‘y’, (d) => yScale(yAccessor(d)))
+					// .attr(‘text-anchor’, ‘middle’)
+					// .text(yAccessor)
+					
+					//
+			
 			// X-axis text
 			selection
 				.append("text")
@@ -211,7 +244,7 @@ export const BarChart = <T, K extends keyof T>({
 				.attr("class", "bar")
 				.attr("height", "0")
 				.attr("transform", `translate(${margin.left},-${margin.bottom})`)
-				.attr("y", chartHeight + margin.top)
+				//.attr("y", chartHeight + margin.top)
 				.attr("width", xScale.bandwidth())
 				//set the height of the rect element to the scaled value of the data
 				.attr("x", (d) => {
@@ -230,8 +263,8 @@ export const BarChart = <T, K extends keyof T>({
 				//set the height of the rect element to the scaled value of the data
 				.transition()
 				.delay((d, i) => i * 100)
-				.duration(1000)
-				.ease(d3.easeBounce)
+				.duration(600)
+				.ease(d3.easeSinInOut)
 				.attr("width", xScale.bandwidth())
 				//set the height of the rect element to the scaled value of the data
 				.attr("x", (d) => {
@@ -254,6 +287,24 @@ export const BarChart = <T, K extends keyof T>({
 				.attr("fill", "var(--rectColor)")
 				.style("stroke", "var(--rectStroke)")
 				.style("stroke-width", "1");
+
+				//const rectValue = selection
+					//Displaying data value on bars
+			   // .append('text')
+			   // .attr("x", (d) => xScale(xAccessor);
+				//set the y position of the rect element to the scaled value of the data
+				//.attr("y", (d) => chartHeight + margin.bottom + margin.top)
+				//.attr("text-anchor", "middle")
+				//.text(yAccessor);
+
+
+
+				//.append(‘text’)
+				//.attr(‘x’, (d) => xScale(xAccessor(d)))
+			   // .attr(‘y’, (d) => yScale(yAccessor(d)))
+			   // .attr(‘text-anchor’, ‘middle’)
+			   // .text(yAccessor)
+
 
 			// .append("text")
 			// 	.text((d) => d)
