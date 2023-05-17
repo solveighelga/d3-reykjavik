@@ -133,6 +133,12 @@ export const BarChart = <T, K extends keyof T>({
 		.tickPadding(yAxisTickPadding)
 		.tickFormat((d) => `${yAxisUnit[0]} ${d} ${yAxisUnit[1]}`);
 
+		
+
+	
+
+
+
 	//all magic happens here
 	useEffect(() => {
 		if (!selection) {

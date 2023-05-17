@@ -6,6 +6,14 @@
   padding: 6rem;
   min-height: 100vh;
 }
+/*line.stroke {
+  stroke: black;
+  opacity: 1;
+}*/
+
+
+
+
 
 .description {
   display: inherit;
