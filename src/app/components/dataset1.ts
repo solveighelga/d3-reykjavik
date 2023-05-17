@@ -1,9 +1,4 @@
-"use client";
-
-import { BarChart } from "./components/BarChart";
-import styles from "./page.module.css";
-
-type DataType = {
+export type DataTypeA = {
 	kyn: string;
 	tegund: string;
 	aldur: string;
@@ -12,7 +7,7 @@ type DataType = {
 	hlutfall: number;
 };
 
-const data: DataType[] = [
+const data: DataTypeA[] = [
 	{
 		kyn: "Karlar",
 		tegund: "Fjárhagsaðstoð til framfærslu",
@@ -110,24 +105,4 @@ const data: DataType[] = [
 		hlutfall: 0.0755813953,
 	},
 ];
-const dataKarlar = data.filter((item) => item.kyn === "Karlar");
-
-export default function Home() {
-	return (
-		<main className={styles.main}>
-			<h1>D3 Project for Reykjavík</h1>
-			<BarChart
-				title='Data Karlar'
-				data={dataKarlar}
-				summary='Fjárhagsaðstoð til framfærslu'
-				xAccessor={(d) => {
-					return d.artal.toString();
-				}}
-				yAccessor={(d) => {
-					return d.fjoldi;
-				}}
-				options={{}}
-			/>
-		</main>
-	);
-}
+export const dataKarlar = data.filter((item) => item.kyn === "Karlar");
