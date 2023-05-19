@@ -59,6 +59,8 @@ export const BarChart = <T, K extends keyof T>({
 	options,
 }: BarChartProps<T, K>) => {
 	const [highContrast, setHighContrast] = useState(false);
+	//used to make sure that Axis labels are not cut off
+	const basePadding = 32;
 	//taking options from the props and setting default values
 	const {
 		width = 872,
@@ -73,8 +75,10 @@ export const BarChart = <T, K extends keyof T>({
 		width -
 		margin.left -
 		margin.right -
-		(yAxisOptions?.yAxisTickPadding || 0);
-	const chartHeight = height - margin.top - margin.bottom;
+		(yAxisOptions?.yAxisTickPadding || 0) -
+		basePadding * 2.5;
+	const chartHeight =
+		height - margin.top - basePadding - margin.bottom - basePadding * 2.5;
 
 	const {
 		yAxisUnit = ["", ""],
@@ -129,14 +133,14 @@ export const BarChart = <T, K extends keyof T>({
 	//define the axis
 	const xAxis = d3
 		.axisBottom(xScale)
-		.tickSize(xAxisTickSize)
+		.tickSizeInner(xAxisTickSize)
 		.tickPadding(xAxisTickPadding)
 		.tickFormat((d) => `${xAxisUnit[0]} ${d} ${xAxisUnit[1]}`);
 
 	const yAxis = d3
 		.axisLeft(yScale)
 		.ticks(10)
-		.tickSize(yAxisTickSize)
+		.tickSizeInner(yAxisTickSize)
 		.tickPadding(yAxisTickPadding)
 		.tickFormat((d) => `${yAxisUnit[0]} ${d} ${yAxisUnit[1]}`);
 
@@ -173,49 +177,38 @@ export const BarChart = <T, K extends keyof T>({
 						? "var(--chartCanvasColorHighContrast)"
 						: "var(--chartCanvasColor)"
 				)
-				.attr("transform", `translate(${margin.left}, ${margin.top})`);
-			
-			selection
-			    .append("g")
-			    .selectAll("text")
-			//join the data to the selection
-			    .data(data)
-			//for each data item that does not have a corresponding element in the selection, create a new element
-			    .enter()
-			//append a rect element to the selection
-			    .append("text")
-				//.attr('transform', `translate(${xScale.bandwidth() /2 - 5})`)
-				//.attr('x', (d) => xScale.bandwidth())
-                //.attr('y', (d) => yScale(yAccessor(d)))
-				.attr('x', (d) => xScale(xAccessor(d))! + xScale.bandwidth() / 2 +55)
-                .attr('y', (d) => yScale(yAccessor(d))! + 25)
-				
-				
-				.text(yAccessor);
+				.attr(
+					"transform",
+					`translate(${margin.left + basePadding * 2.5}, ${
+						margin.top + basePadding
+					})`
+				);
 
-			
-			    
-				//.attr("x", '740') // Adjust the x position as needed
-				//.attr(
-					//	"y", '25') // Adjust the y position as needed
-					//.attr('text-anchor', 'middle');
-					
-					//.append(‘text’)
-					//.attr(‘x’, (d) => yScale(yAccessor(d)))
-					// .attr(‘y’, (d) => yScale(yAccessor(d)))
-					// .attr(‘text-anchor’, ‘middle’)
-					// .text(yAccessor)
-					
-					//
-			
+			//.attr("x", '740') // Adjust the x position as needed
+			//.attr(
+			//	"y", '25') // Adjust the y position as needed
+			//.attr('text-anchor', 'middle');
+
+			//.append(‘text’)
+			//.attr(‘x’, (d) => yScale(yAccessor(d)))
+			// .attr(‘y’, (d) => yScale(yAccessor(d)))
+			// .attr(‘text-anchor’, ‘middle’)
+			// .text(yAccessor)
+
+			//
+
 			// X-axis text
 			selection
 				.append("text")
 				.text("Ártal")
-				.attr("x", chartWidth / 2 + margin.left) // Adjust the x position as needed
+				.attr("x", chartWidth / 2 + margin.left + basePadding * 2.5) // Adjust the x position as needed
 				.attr(
 					"y",
-					chartHeight - margin.top + xAxisTickPadding + xAxisTickSize + 96
+					chartHeight +
+						margin.top +
+						basePadding +
+						xAxisTickPadding +
+						basePadding
 				) // Adjust the y position as needed
 				.attr("text-anchor", "middle")
 				.attr(
@@ -229,8 +222,8 @@ export const BarChart = <T, K extends keyof T>({
 			selection
 				.append("text")
 				.text("Fjöldi á ári")
-				.attr("x", -(chartHeight / 2)) // Adjust the x position as needed
-				.attr("y", yAxisTickPadding) // Adjust the y position as needed
+				.attr("x", -(chartHeight / 2) - margin.top + basePadding) // Adjust the Y(!) position as needed
+				.attr("y", yAxisTickPadding + margin.left + 0.75 * basePadding) // Adjust the X(!) position as needed
 				.attr("text-anchor", "middle")
 				.attr("transform", `rotate(-90)`)
 				.attr(
@@ -250,7 +243,12 @@ export const BarChart = <T, K extends keyof T>({
 						? "var(--yAxisTextColorHighContrast)"
 						: "var(--yAxisTextColor)"
 				)
-				.attr("transform", `translate(${margin.left}, ${margin.top})`)
+				.attr(
+					"transform",
+					`translate(${margin.left + basePadding * 2.5}, ${
+						margin.top + basePadding
+					})`
+				)
 				.selectAll(".tick line")
 				.attr(
 					"stroke",
@@ -272,8 +270,13 @@ export const BarChart = <T, K extends keyof T>({
 				.append("rect")
 				.attr("class", "bar")
 				.attr("height", "0")
-				.attr("transform", `translate(${margin.left},-${margin.bottom})`)
-				//.attr("y", chartHeight + margin.top)
+				.attr(
+					"transform",
+					`translate(${margin.left + basePadding * 2.5},-${
+						margin.bottom + basePadding * 2.5
+					})`
+				)
+				//.attr("y", chartHeight + margin.top +basePadding)
 				.attr("width", xScale.bandwidth())
 				//set the height of the rect element to the scaled value of the data
 				.attr("x", (d) => {
@@ -287,7 +290,15 @@ export const BarChart = <T, K extends keyof T>({
 					//xScale(xAccessor(d))!;
 				})
 				//set the y position of the rect element to the scaled value of the data
-				.attr("y", (d) => chartHeight + margin.bottom + margin.top)
+				.attr(
+					"y",
+					(d) =>
+						chartHeight +
+						margin.bottom +
+						basePadding * 2.5 +
+						margin.top +
+						basePadding
+				)
 				.attr("width", xScale.bandwidth())
 				//set the height of the rect element to the scaled value of the data
 				.transition()
@@ -308,8 +319,21 @@ export const BarChart = <T, K extends keyof T>({
 				})
 
 				//set the y position of the rect element to the scaled value of the data
-				.attr("y", (d) => yScale(yAccessor(d)) + margin.top + margin.bottom)
-				.attr("transform", `translate(${margin.left},-${margin.bottom})`)
+				.attr(
+					"y",
+					(d) =>
+						yScale(yAccessor(d)) +
+						margin.top +
+						basePadding +
+						margin.bottom +
+						basePadding * 2.5
+				)
+				.attr(
+					"transform",
+					`translate(${margin.left + basePadding * 2.5},-${
+						margin.bottom + basePadding * 2.5
+					})`
+				)
 				.attr("height", (d) => chartHeight - yScale(yAccessor(d)))
 				//set the width of the rect element to 20 - constant
 				//set the fill color of the rect element to blue
@@ -327,28 +351,53 @@ export const BarChart = <T, K extends keyof T>({
 				)
 				.style("stroke-width", "1");
 
-				//const rectValue = selection
-					//Displaying data value on bars
-			   // .append('text')
-			   // .attr("x", (d) => xScale(xAccessor);
-				//set the y position of the rect element to the scaled value of the data
-				//.attr("y", (d) => chartHeight + margin.bottom + margin.top)
-				//.attr("text-anchor", "middle")
-				//.text(yAccessor);
+			selection
+				.append("g")
+				.selectAll("text")
+				//join the data to the selection
+				.data(data)
+				//for each data item that does not have a corresponding element in the selection, create a new element
+				.enter()
+				//append a rect element to the selection
+				.append("text")
+				//.attr('transform', `translate(${xScale.bandwidth() /2 - 5})`)
+				//.attr('x', (d) => xScale.bandwidth())
+				//.attr('y', (d) => yScale(yAccessor(d)))
+				.attr(
+					"x",
+					(d) =>
+						xScale(xAccessor(d))! +
+						xScale.bandwidth() / 2 +
+						margin.left +
+						basePadding * 2.5
+				)
+				.attr("text-anchor", "middle")
+				.attr(
+					"y",
+					(d) => yScale(yAccessor(d))! + margin.top + basePadding - 5
+				)
 
+				.text(yAccessor);
 
+			//const rectValue = selection
+			//Displaying data value on bars
+			// .append('text')
+			// .attr("x", (d) => xScale(xAccessor);
+			//set the y position of the rect element to the scaled value of the data
+			//.attr("y", (d) => chartHeight + margin.bottom + margin.top +basePadding)
+			//.attr("text-anchor", "middle")
+			//.text(yAccessor);
 
-				//.append(‘text’)
-				//.attr(‘x’, (d) => xScale(xAccessor(d)))
-			   // .attr(‘y’, (d) => yScale(yAccessor(d)))
-			   // .attr(‘text-anchor’, ‘middle’)
-			   // .text(yAccessor)
-
+			//.append(‘text’)
+			//.attr(‘x’, (d) => xScale(xAccessor(d)))
+			// .attr(‘y’, (d) => yScale(yAccessor(d)))
+			// .attr(‘text-anchor’, ‘middle’)
+			// .text(yAccessor)
 
 			// .append("text")
 			// 	.text((d) => d)
 			// 	.attr("x", (d) => xScale(xAccessor(d)) + xScale.bandwidth() / 2)
-			// 	.attr("y", (d) => yScale(yAccessor(d)) + margin.top + margin.bottom)
+			// 	.attr("y", (d) => yScale(yAccessor(d)) + margin.top +basePadding + margin.bottom)
 			// 	.attr("text-anchor", "middle")
 			// 	.attr("fill", "black");
 
@@ -369,7 +418,9 @@ export const BarChart = <T, K extends keyof T>({
 				)
 				.attr(
 					"transform",
-					`translate(${margin.left}, ${chartHeight + margin.top})`
+					`translate(${margin.left + basePadding * 2.5}, ${
+						chartHeight + margin.top + basePadding
+					})`
 				)
 				.call(xAxis)
 				.selectAll(".domain")
