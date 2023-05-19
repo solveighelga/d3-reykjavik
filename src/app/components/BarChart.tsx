@@ -58,6 +58,7 @@ export const BarChart = <T, K extends keyof T>({
 	yAccessor,
 	options,
 }: BarChartProps<T, K>) => {
+	const [highContrast, setHighContrast] = useState(false);
 	//taking options from the props and setting default values
 	const {
 		width = 872,
@@ -67,8 +68,12 @@ export const BarChart = <T, K extends keyof T>({
 		yAxisOptions,
 		xAxisOptions,
 	} = options || {};
-	console.log(summary)
-	const chartWidth = width - margin.left - margin.right;
+	console.log(summary);
+	const chartWidth =
+		width -
+		margin.left -
+		margin.right -
+		(yAxisOptions?.yAxisTickPadding || 0);
 	const chartHeight = height - margin.top - margin.bottom;
 
 	const {
@@ -135,12 +140,6 @@ export const BarChart = <T, K extends keyof T>({
 		.tickPadding(yAxisTickPadding)
 		.tickFormat((d) => `${yAxisUnit[0]} ${d} ${yAxisUnit[1]}`);
 
-		
-
-	
-
-
-
 	//all magic happens here
 	useEffect(() => {
 		if (!selection) {
@@ -155,7 +154,12 @@ export const BarChart = <T, K extends keyof T>({
 				.attr("class", "svg-background")
 				.attr("width", width)
 				.attr("height", height)
-				.attr("fill", "var(--svgContainerColor)");
+				.attr(
+					"fill",
+					highContrast
+						? "var(--svgContainerColorHighContrast)"
+						: "var(--svgContainerColor)"
+				);
 
 			//defining the chart canvas
 			selection
@@ -163,7 +167,12 @@ export const BarChart = <T, K extends keyof T>({
 				.attr("class", "chart-canvas")
 				.attr("width", chartWidth)
 				.attr("height", chartHeight)
-				.attr("fill", "var(--chartCanvasColor)")
+				.attr(
+					"fill",
+					highContrast
+						? "var(--chartCanvasColorHighContrast)"
+						: "var(--chartCanvasColor)"
+				)
 				.attr("transform", `translate(${margin.left}, ${margin.top})`);
 
 			// X-axis text
@@ -176,7 +185,12 @@ export const BarChart = <T, K extends keyof T>({
 					chartHeight - margin.top + xAxisTickPadding + xAxisTickSize + 96
 				) // Adjust the y position as needed
 				.attr("text-anchor", "middle")
-				.attr("fill", "var(--svgTextColor)");
+				.attr(
+					"fill",
+					highContrast
+						? "var(--svgTextColorHighContrast)"
+						: "var(--svgTextColor)"
+				);
 
 			// Y-axis text
 			selection
@@ -186,16 +200,31 @@ export const BarChart = <T, K extends keyof T>({
 				.attr("y", yAxisTickPadding) // Adjust the y position as needed
 				.attr("text-anchor", "middle")
 				.attr("transform", `rotate(-90)`)
-				.attr("fill", "var(--svgTextColor)");
+				.attr(
+					"fill",
+					highContrast
+						? "var(--svgTextColorHighContrast)"
+						: "var(--svgTextColor)"
+				);
 
 			selection
 				.append("g")
 				.call(yAxis)
 				.attr("class", "x-axis")
-				.style("color", "var(--yAxisTextColor)")
+				.style(
+					"color",
+					highContrast
+						? "var(--yAxisTextColorHighContrast)"
+						: "var(--yAxisTextColor)"
+				)
 				.attr("transform", `translate(${margin.left}, ${margin.top})`)
 				.selectAll(".tick line")
-				.attr("stroke", "var(--yAxisTickColor)");
+				.attr(
+					"stroke",
+					highContrast
+						? "var(--yAxisTickColorHighContrast)"
+						: "var(--yAxisTickColor)"
+				);
 
 			selection.selectAll(".domain").attr("stroke", "none");
 
@@ -244,15 +273,25 @@ export const BarChart = <T, K extends keyof T>({
 					//as it is here
 					//xScale(xAccessor(d))!;
 				})
-				
+
 				//set the y position of the rect element to the scaled value of the data
 				.attr("y", (d) => yScale(yAccessor(d)) + margin.top + margin.bottom)
 				.attr("transform", `translate(${margin.left},-${margin.bottom})`)
 				.attr("height", (d) => chartHeight - yScale(yAccessor(d)))
 				//set the width of the rect element to 20 - constant
 				//set the fill color of the rect element to blue
-				.attr("fill", "var(--rectColor)")
-				.style("stroke", "var(--rectStroke)")
+				.attr(
+					"fill",
+					highContrast
+						? "var(--rectColorHighContrast)"
+						: "var(--rectColor)"
+				)
+				.style(
+					"stroke",
+					highContrast
+						? "var(--rectStrokeHighContrast)"
+						: "var(--rectStroke)"
+				)
 				.style("stroke-width", "1");
 
 			// .append("text")
@@ -262,27 +301,47 @@ export const BarChart = <T, K extends keyof T>({
 			// 	.attr("text-anchor", "middle")
 			// 	.attr("fill", "black");
 
-
 			const xAxisGroup = selection
 				.append("g")
 				.attr("class", "x-axis")
-				.style("color", "var(--xAxisTextColor)")
-				.style('color', "var(--xAxisTextColor)")
+				.style(
+					"color",
+					highContrast
+						? "var(--xAxisTextColorHighContrast)"
+						: "var(--xAxisTextColor)"
+				)
+				.style(
+					"color",
+					highContrast
+						? "var(--xAxisTextColorHighContrast)"
+						: "var(--xAxisTextColor)"
+				)
 				.attr(
 					"transform",
 					`translate(${margin.left}, ${chartHeight + margin.top})`
 				)
 				.call(xAxis)
 				.selectAll(".domain")
-				.attr("stroke", "var(--xAxisTickColor)");
+				.attr(
+					"stroke",
+					highContrast
+						? "var(--xAxisTickColorHighContrast)"
+						: "var(--xAxisTickColor)"
+				);
 		}
-	}, [selection]);
+	}, [selection, highContrast]);
 
-	return <>
-	        <h1>{summary}</h1>
-			<h2>{title}</h2>
-	        <svg ref={svgRef} />
-			</>;
+	return (
+		<div className='BarChart__container'>
+			<button onClick={() => setHighContrast((prev) => !prev)}>
+				{" "}
+				{highContrast ? "High Contrast" : "Low Contrast"}
+			</button>
+			<h1>{summary}</h1>
+			<h2 className='BarChart__title'>{title}</h2>
+			<svg ref={svgRef} />
+		</div>
+	);
 };
 
 const addRandomData = () => {
