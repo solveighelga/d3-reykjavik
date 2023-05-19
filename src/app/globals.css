@@ -31,7 +31,6 @@
 	--rectColorHighContrast: rgb(0, 24, 53);
 	--rectStrokeHighContrast: rgba(42, 43, 44, 1);
 }
-
 * {
 	box-sizing: border-box;
 	padding: 0;
