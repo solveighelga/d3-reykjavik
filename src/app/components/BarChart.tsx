@@ -431,7 +431,7 @@ export const BarChart = <T, K extends keyof T>({
 						: "var(--xAxisTickColor)"
 				);
 		}
-	}, [selection, highContrast]);
+	}, [selection, highContrast, options, data]);
 
 	return (
 		<div className='BarChart__container'>
