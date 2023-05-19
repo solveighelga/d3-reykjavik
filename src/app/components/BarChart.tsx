@@ -281,7 +281,7 @@ export const BarChart = <T, K extends keyof T>({
 	return <>
 	        <h1>{summary}</h1>
 			<h2>{title}</h2>
-	        <svg ref={svgRef} />
+	        <svg ref={svgRef} role="graphics-document"/>
 			</>;
 };
 
