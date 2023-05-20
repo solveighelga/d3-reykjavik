@@ -13,7 +13,7 @@ const data: DataTypeA[] = [
 		tegund: "Fjárhagsaðstoð til framfærslu",
 		aldur: "18-19 ára",
 		artal: 2007,
-		fjoldi: 28,
+		fjoldi: 2800,
 		hlutfall: 0.0169082126,
 	},
 	{
@@ -37,7 +37,7 @@ const data: DataTypeA[] = [
 		tegund: "Fjárhagsaðstoð til framfærslu",
 		aldur: "18-19 ára",
 		artal: 2008,
-		fjoldi: 52,
+		fjoldi: 5200,
 		hlutfall: 0.0277185501,
 	},
 	{
@@ -61,7 +61,7 @@ const data: DataTypeA[] = [
 		tegund: "Fjárhagsaðstoð til framfærslu",
 		aldur: "18-19 ára",
 		artal: 2009,
-		fjoldi: 90,
+		fjoldi: 9000,
 		hlutfall: 0.0361881785,
 	},
 	{
@@ -85,7 +85,7 @@ const data: DataTypeA[] = [
 		tegund: "Fjárhagsaðstoð til framfærslu",
 		aldur: "18-19 ára",
 		artal: 2010,
-		fjoldi: 99,
+		fjoldi: 9900,
 		hlutfall: 0.0338577291,
 	},
 	{

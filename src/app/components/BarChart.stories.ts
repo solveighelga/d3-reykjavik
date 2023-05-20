@@ -22,5 +22,26 @@ export const Primary: Story<DataTypeA, "artal"> = {
 		yAccessor: (d) => {
 			return d.fjoldi;
 		},
+		options: {
+			width: 800,
+			height: 600,
+			margin: {
+				top: 0,
+				right: 0,
+				bottom: 0,
+				left: 0,
+			},
+			xAxisOptions: {
+				xAxisTickPadding: 10,
+				xAxisTickSize: 0,
+				xAxisUnit: ["", ""],
+			},
+			yAxisOptions: {
+				yAxisTickPadding: 10,
+				yAxisTickSize: undefined,
+				yAxisUnit: ["", ""],
+			},
+			padding: { inner: 0.1, outer: 0.1 },
+		},
 	},
 };
