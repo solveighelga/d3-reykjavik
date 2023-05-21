@@ -4,49 +4,53 @@ import * as d3 from "d3";
 import { useEffect, useRef, useState } from "react";
 
 export interface xAxisOptions {
-	//unit of the y axis. Decorator in form of tuple.  (e.g. xAxisUnit: ["$", "M"] will show $1M)
+	/**unit of the y axis. Decorator in form of tuple.  (e.g. xAxisUnit: ["$", "M"] will show $1M)*/
 	xAxisUnit?: [string, string];
 	xAxisTickSize?: number;
 	xAxisTickPadding?: number;
 }
 export interface yAxisOptions {
-	//unit of the y axis. Decorator in form of tuple.  (e.g. yAxisUnit: ["$", "M"] will show $1M)
+	/**unit of the y axis. Decorator in form of tuple.  (e.g. yAxisUnit: ["$", "M"] will show $1M)*/
 	yAxisUnit?: [string, string];
 	yAxisTickSize?: number;
 	yAxisTickPadding?: number;
 }
 
 export interface BarChartOptions {
-	//width of the svg element
+	/**width of the svg element*/
 	width?: number;
-	//height of the svg element
+	/**height of the svg element*/
 	height?: number;
-	//margin of the svg element
+	/**margin of the svg element*/
 	margin?: {
 		top: number;
 		right: number;
 		bottom: number;
 		left: number;
 	};
-	//padding between the bars must be in the range [0, 1) 0 means no padding and 1 means no bars
+	/**padding between the bars must be in the range [0, 1) 0 means no padding and 1 means no bars*/
 	padding?: number | { inner: number; outer: number };
-	//unit of the y axis. Decorator in form of tuple.  (e.g. yAxisUnit: ["$", "M"] will show $1M)
+	/**unit of the y axis. Decorator in form of tuple.  (e.g. yAxisUnit: ["$", "M"] will show $1M)*/
 	yAxisOptions?: yAxisOptions;
 	xAxisOptions?: xAxisOptions;
 }
 
 export interface BarChartProps<T, K extends keyof T> {
-	//Dataset to be visualized.
+	/**Dataset to be visualized.*/
 	data: T[];
-	//Title of the chart.
+	/**Title of the chart.*/
 	title: string;
-	//Summary of the chart.
+	/**Summary of the chart.*/
 	summary: string;
-	//Function to access the x value of the data. This function must return the x value as a string.If we work on data numbers please just convert them to string. (e.g. xAccessor: (d) => d.x.toString())
+	/**Function to access the x value of the data. This function must return the x value as a string.If we work on data numbers please just convert them to string. (e.g. xAccessor: (d) => d.x.toString())*/
 	xAccessor: (d: T) => T[K] extends string ? T[K] : any;
-	//Function to access the y value of the data. This function should return a number.
+	/**X axis label*/
+	xLabel: string;
+	/**Y axis label*/
+	yLabel: string;
+	/**Function to access the y value of the data. This function should return a number.*/
 	yAccessor: (d: T) => T[K] extends number ? T[K] : any;
-	//Options to customize the chart.
+	/**Options to customize the chart.*/
 	options?: BarChartOptions;
 }
 
@@ -56,6 +60,8 @@ export const BarChart = <T, K extends keyof T>({
 	data,
 	xAccessor,
 	yAccessor,
+	xLabel,
+	yLabel,
 	options,
 }: BarChartProps<T, K>) => {
 	const [highContrast, setHighContrast] = useState(false);
@@ -197,9 +203,10 @@ export const BarChart = <T, K extends keyof T>({
 
 			//
 
-			// X-axis text
+			// X-axis label
 			selection
 				.append("text")
+				.attr("class", "x-axis-label")
 				.text("Ártal")
 				.attr("x", chartWidth / 2 + margin.left + basePadding * 2.5) // Adjust the x position as needed
 				.attr(
@@ -218,10 +225,11 @@ export const BarChart = <T, K extends keyof T>({
 						: "var(--svgTextColor)"
 				);
 
-			// Y-axis text
+			// Y-axis label
 			selection
 				.append("text")
 				.text("Fjöldi á ári")
+				.attr("class", "y-axis-label")
 				.attr("x", -(chartHeight / 2) - margin.top + basePadding) // Adjust the Y(!) position as needed
 				.attr("y", yAxisTickPadding + margin.left + 0.75 * basePadding) // Adjust the X(!) position as needed
 				.attr("text-anchor", "middle")
@@ -237,6 +245,7 @@ export const BarChart = <T, K extends keyof T>({
 				.append("g")
 				.call(yAxis)
 				.attr("class", "x-axis")
+				.attr("aria-hidden", "true")
 				.style(
 					"color",
 					highContrast
@@ -268,6 +277,7 @@ export const BarChart = <T, K extends keyof T>({
 				.enter()
 				//append a rect element to the selection
 				.append("rect")
+				.attr("tabindex", "0")
 				.attr("class", "bar")
 				.attr("height", "0")
 				.attr(
@@ -353,6 +363,7 @@ export const BarChart = <T, K extends keyof T>({
 
 			selection
 				.append("g")
+				.attr("class", "bar-label")
 				.selectAll("text")
 				//join the data to the selection
 				.data(data)
@@ -360,9 +371,6 @@ export const BarChart = <T, K extends keyof T>({
 				.enter()
 				//append a rect element to the selection
 				.append("text")
-				//.attr('transform', `translate(${xScale.bandwidth() /2 - 5})`)
-				//.attr('x', (d) => xScale.bandwidth())
-				//.attr('y', (d) => yScale(yAccessor(d)))
 				.attr(
 					"x",
 					(d) =>
@@ -404,6 +412,7 @@ export const BarChart = <T, K extends keyof T>({
 			const xAxisGroup = selection
 				.append("g")
 				.attr("class", "x-axis")
+				.attr("aria-hidden", "true")
 				.style(
 					"color",
 					highContrast
@@ -433,22 +442,49 @@ export const BarChart = <T, K extends keyof T>({
 		}
 	}, [selection, highContrast, options, data]);
 
+	const crateTable = (
+		data: T[],
+		xAccessor: (d: T) => string,
+		yAccessor: (d: T) => number,
+		xLabel: string,
+		yLabel: string
+	) => {
+		return (
+			<table className='sr-only'>
+				<thead>
+					<tr>
+						<th>{xLabel}</th>
+						<th>{yLabel}</th>
+					</tr>
+				</thead>
+				<tbody>
+					{data!.map((d, i) => (
+						<tr key={`${i}-${d}`}>
+							<td>{xAccessor(d)}</td>
+							<td>{yAccessor(d)}</td>
+						</tr>
+					))}
+				</tbody>
+			</table>
+		);
+	};
+
 	return (
 		<div className='BarChart__container'>
 			<button onClick={() => setHighContrast((prev) => !prev)}>
 				{" "}
 				{highContrast ? "High Contrast" : "Low Contrast"}
 			</button>
-			<h1>{summary}</h1>
+
 			<h2 className='BarChart__title'>{title}</h2>
-			<svg ref={svgRef} />
+			<desc id='chartSummary'>{summary}</desc>
+			<svg
+				ref={svgRef}
+				role='figure'
+				aria-labelledby='chartSummary'
+				tabIndex={1}
+			/>
+			{crateTable(data, xAccessor, yAccessor, xLabel, yLabel)}
 		</div>
 	);
-};
-
-const addRandomData = () => {
-	const dataToBeAdded = {
-		xValue: prompt("Enter the value for x axis"),
-		yValue: prompt("Enter the value for y axis"),
-	};
 };

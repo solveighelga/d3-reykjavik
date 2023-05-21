@@ -22,6 +22,8 @@ export const Primary: Story<DataTypeA, "artal"> = {
 		yAccessor: (d) => {
 			return d.fjoldi;
 		},
+		xLabel: "Ár",
+		yLabel: "Fjöldi",
 		options: {
 			width: 800,
 			height: 600,
