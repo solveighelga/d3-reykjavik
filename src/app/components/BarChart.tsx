@@ -271,6 +271,7 @@ export const BarChart = <T, K extends keyof T>({
 				.style("stroke", "var(--rectStroke)")
 				.style("stroke-width", "1");
 
+			// Here, we let the value corresponding to each rectangle float 
 				selection
 			    .append("g")
 			    .selectAll("text")
