@@ -166,24 +166,7 @@ export const BarChart = <T, K extends keyof T>({
 				.attr("fill", "var(--chartCanvasColor)")
 				.attr("transform", `translate(${margin.left}, ${margin.top})`);
 			
-			selection
-			    .append("g")
-			    .selectAll("text")
-			//join the data to the selection
-			    .data(data)
-			//for each data item that does not have a corresponding element in the selection, create a new element
-			    .enter()
-			//append a rect element to the selection
-			    .append("text")
-				//.attr('transform', `translate(${xScale.bandwidth() /2 - 5})`)
-				//.attr('x', (d) => xScale.bandwidth())
-                //.attr('y', (d) => yScale(yAccessor(d)))
-				.attr('x', (d) => xScale(xAccessor(d))! + xScale.bandwidth() / 2 +55)
-                .attr('y', (d) => yScale(yAccessor(d))! + 25)
-				
-				
-				.text(yAccessor);
-
+			
 			
 			    
 				//.attr("x", '740') // Adjust the x position as needed
@@ -287,6 +270,23 @@ export const BarChart = <T, K extends keyof T>({
 				.attr("fill", "var(--rectColor)")
 				.style("stroke", "var(--rectStroke)")
 				.style("stroke-width", "1");
+
+				selection
+			    .append("g")
+			    .selectAll("text")
+			//join the data to the selection
+			    .data(data)
+			//for each data item that does not have a corresponding element in the selection, create a new element
+			    .enter()
+			//append a rect element to the selection
+			    .append("text")
+				//.attr('transform', `translate(${xScale.bandwidth() /2 - 5})`)
+				//.attr('x', (d) => xScale.bandwidth())
+                //.attr('y', (d) => yScale(yAccessor(d)))
+				.attr('x', (d) => xScale(xAccessor(d))! + xScale.bandwidth() / 2 +55)
+                .attr('y', (d) => yScale(yAccessor(d))! + 25)
+				.text(yAccessor);
+
 
 				//const rectValue = selection
 					//Displaying data value on bars

@@ -109,6 +109,22 @@ const data: DataType[] = [
 		fjoldi: 221,
 		hlutfall: 0.0755813953,
 	},
+	{
+		kyn: "Karlar",
+		tegund: "Fjárhagsaðstoð til framfærslu",
+		aldur: "18-19 ára",
+		artal: 2011,
+		fjoldi: 80,
+		hlutfall: 0.0361881785,
+	},
+	{
+		kyn: "Karlar",
+		tegund: "Fjárhagsaðstoð til framfærslu",
+		aldur: "18-19 ára",
+		artal: 2012,
+		fjoldi: 37,
+		hlutfall: 0.0361881785,
+	},
 ];
 const dataKarlar = data.filter((item) => item.kyn === "Karlar");
 
@@ -118,7 +134,7 @@ export default function Home() {
 	return (
 		<main className={styles.main}>
 			<div>
-				<h1>D3 Project for Reykjavík</h1>
+				<h1>Accessible data visualisation Project using D3 for Reykjavík</h1>
 			<BarChart
 				title='Data Karlar'
 				data={dataKarlar}
