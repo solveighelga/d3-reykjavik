@@ -2,6 +2,7 @@
 
 import * as d3 from "d3";
 import { useEffect, useRef, useState } from "react";
+import { css, srOnly } from '@reykjavik/hanna-css';
 
 export interface xAxisOptions {
 	/**unit of the y axis. Decorator in form of tuple.  (e.g. xAxisUnit: ["$", "M"] will show $1M)*/
@@ -151,6 +152,7 @@ export const BarChart = <T, K extends keyof T>({
 		.tickPadding(yAxisTickPadding)
 		.tickFormat((d) => `${yAxisUnit[0]} ${d} ${yAxisUnit[1]}`);
 
+
 	//all magic happens here
 	useEffect(() => {
 		if (!selection) {
@@ -231,7 +233,7 @@ export const BarChart = <T, K extends keyof T>({
 				.append("text")
 				.text("Fjöldi á ári")
 				.attr("class", "y-axis-label")
-				.attr("x", -(chartHeight / 2) - margin.top + basePadding) // Adjust the Y(!) position as needed
+				.attr("x", -(chartHeight / 2) - margin.top - 50) // Adjust the Y(!) position as needed
 				.attr("y", yAxisTickPadding + margin.left + 0.75 * basePadding) // Adjust the X(!) position as needed
 				.attr("text-anchor", "middle")
 				.attr("transform", `rotate(-90)`)
@@ -443,30 +445,31 @@ export const BarChart = <T, K extends keyof T>({
 		}
 	}, [selection, highContrast, options, data]);
 
-	const crateTable = (
+	const createTable = (
 		data: T[],
 		xAccessor: (d: T) => string,
 		yAccessor: (d: T) => number,
 		xLabel: string,
-		yLabel: string
+		yLabel: string,
+		srOnly: () => string //Accessibility helper, screen reader only
 	) => {
 		return (
-			<table className='sr-only'>
-				<thead>
-					<tr>
-						<th>{xLabel}</th>
-						<th>{yLabel}</th>
-					</tr>
-				</thead>
-				<tbody>
-					{data!.map((d, i) => (
-						<tr key={`${i}-${d}`}>
-							<td>{xAccessor(d)}</td>
-							<td>{yAccessor(d)}</td>
+				<table className='sr-only'>
+					<thead>
+						<tr>
+							<th>{xLabel}</th>
+							<th>{yLabel}</th>
 						</tr>
-					))}
-				</tbody>
-			</table>
+					</thead>
+					<tbody>
+						{data!.map((d, i) => (
+							<tr key={`${i}-${d}`}>
+								<td>{xAccessor(d)}</td>
+								<td>{yAccessor(d)}</td>
+							</tr>
+						))}
+					</tbody>
+				</table>
 		);
 	};
 
@@ -485,7 +488,7 @@ export const BarChart = <T, K extends keyof T>({
 				aria-labelledby='chartSummary'
 				tabIndex={1}
 			/>
-			{crateTable(data, xAccessor, yAccessor, xLabel, yLabel)}
+			{createTable(data, xAccessor, yAccessor, xLabel, yLabel, srOnly)}
 		</div>
 	);
 };
