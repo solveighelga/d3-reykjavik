@@ -120,9 +120,10 @@ export const BarChart = <T, K extends keyof T>({
 	const yScale = d3
 		.scaleLinear()
 		//define the domain of the scale first number of the domain is the minimum value of the data and the second number is the maximum value of the data
-		.domain([0, d3.max(data, yAccessor) || 0])
+		.domain([0, d3.max(data, yAccessor) + 10 || 0])
 		//define the range of the scale first number of the range is the minimum value of the svg and the second number is the maximum value of the svg. Svg canvas is mapped from top to bottom and left to right. So the minimum value of the svg is the height of the svg and the maximum value of the svg is 0 to make bars appear from the bottom
 		.range([chartHeight, 0]);
+
 
 	//define a XScale to scale the data to the svg canvas width
 	const xScale = d3
