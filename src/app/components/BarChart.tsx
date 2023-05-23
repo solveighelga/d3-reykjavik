@@ -66,6 +66,9 @@ export const BarChart = <T, K extends keyof T>({
 	options,
 }: BarChartProps<T, K>) => {
 	const [highContrast, setHighContrast] = useState(false);
+	const handleChange = () => {
+		setHighContrast(!highContrast);
+	  };
 	//used to make sure that Axis labels are not cut off
 	const basePadding = 32;
 	//taking options from the props and setting default values
@@ -143,7 +146,8 @@ export const BarChart = <T, K extends keyof T>({
 		.axisBottom(xScale)
 		.tickSizeInner(xAxisTickSize)
 		.tickPadding(xAxisTickPadding)
-		.tickFormat((d) => `${xAxisUnit[0]} ${d} ${xAxisUnit[1]}`);
+		.tickFormat((d) => `${xAxisUnit[0]} ${d} ${xAxisUnit[1]}`)
+		.tickSizeOuter(0);
 
 	const yAxis = d3
 		.axisLeft(yScale)
@@ -471,12 +475,22 @@ export const BarChart = <T, K extends keyof T>({
 		);
 	};
 
+
 	return (
 		<div className='BarChart__container'>
-			<button onClick={() => setHighContrast((prev) => !prev)}>
-				{" "}
-				{highContrast ? "High Contrast" : "Low Contrast"}
-			</button>
+
+			<div className="checkboxContainer">
+				<input 
+					type="checkbox"
+					checked={highContrast}
+					onChange={handleChange}
+					className="inputContrast"
+				/>
+				<label className="checkboxLabel">
+					High Contrast
+				</label>
+				
+			</div>
 
 			<h2 className='BarChart__title'>{title}</h2>
 			<desc id='chartSummary'>{summary}</desc>
