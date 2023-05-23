@@ -70,3 +70,12 @@ a {
 		transition: none !important;
 	}
 }
+
+
+/* Barchart Styling */
+
+.BarChart__container {
+  display: flex;
+  flex-direction: column;
+  background-color: red;
+}
