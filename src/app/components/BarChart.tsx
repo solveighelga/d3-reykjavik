@@ -2,7 +2,9 @@
 
 import * as d3 from "d3";
 import { useEffect, useRef, useState } from "react";
-import {hannaVars, srOnly, css} from '@reykjavik/hanna-css'
+//import {hannaVars, srOnly, css} from '@reykjavik/hanna-css'
+import React from 'react';
+import styled, { css } from 'styled-components';
 
 export interface xAxisOptions {
 	/**unit of the y axis. Decorator in form of tuple.  (e.g. xAxisUnit: ["$", "M"] will show $1M)*/
@@ -456,6 +458,9 @@ export const BarChart = <T, K extends keyof T>({
 	white-space: nowrap;
 	border: 0;
 	`;
+	const HiddenTable = styled.table`
+  ${srOnly};
+`;
 	const crateTable = (
 		data: T[],
 		xAccessor: (d: T) => string,
@@ -467,8 +472,8 @@ export const BarChart = <T, K extends keyof T>({
 console.log(srOnly)
 		
 		return (
-			<table >
-				<thead className={srOnly}>
+			<HiddenTable >
+				<thead>
 					<tr>
 						<th>{xLabel}</th>
 						<th>{yLabel}</th>
@@ -482,7 +487,7 @@ console.log(srOnly)
 						</tr>
 					))}
 				</tbody>
-			</table>
+			</HiddenTable>
 		);
 	};
 
