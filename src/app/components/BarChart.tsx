@@ -75,7 +75,7 @@ export const BarChart = <T, K extends keyof T>({
 	const {
 		width = 872,
 		height = 662,
-		margin = { top: 40, right: 20, bottom: 60, left: 60 },
+		margin = { top: 50, right: 20, bottom: 60, left: 60 },
 		padding = 0.3,
 		yAxisOptions,
 		xAxisOptions,
@@ -236,7 +236,7 @@ export const BarChart = <T, K extends keyof T>({
 				.append("text")
 				.text("Fjöldi á ári")
 				.attr("class", "y-axis-label")
-				.attr("x", -(chartHeight / 2) - margin.top + basePadding) // Adjust the Y(!) position as needed
+				.attr("x", -(chartHeight / 2) - margin.top - basePadding) // Adjust the Y(!) position as needed
 				.attr("y", yAxisTickPadding + margin.left + 0.75 * basePadding) // Adjust the X(!) position as needed
 				.attr("text-anchor", "middle")
 				.attr("transform", `rotate(-90)`)
