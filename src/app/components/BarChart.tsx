@@ -143,7 +143,8 @@ export const BarChart = <T, K extends keyof T>({
 		.axisBottom(xScale)
 		.tickSizeInner(xAxisTickSize)
 		.tickPadding(xAxisTickPadding)
-		.tickFormat((d) => `${xAxisUnit[0]} ${d} ${xAxisUnit[1]}`);
+		.tickFormat((d) => `${xAxisUnit[0]} ${d} ${xAxisUnit[1]}`)
+		.tickSizeOuter(0);
 
 	const yAxis = d3
 		.axisLeft(yScale)
