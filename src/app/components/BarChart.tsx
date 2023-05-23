@@ -2,6 +2,7 @@
 
 import * as d3 from "d3";
 import { useEffect, useRef, useState } from "react";
+import { css } from '@reykjavik/hanna-css'
 
 export interface xAxisOptions {
 	/**unit of the y axis. Decorator in form of tuple.  (e.g. xAxisUnit: ["$", "M"] will show $1M)*/
@@ -442,16 +443,31 @@ export const BarChart = <T, K extends keyof T>({
 		}
 	}, [selection, highContrast, options, data]);
 
+	
+	const srOnly = css`
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
+	`;
 	const crateTable = (
 		data: T[],
 		xAccessor: (d: T) => string,
 		yAccessor: (d: T) => number,
 		xLabel: string,
-		yLabel: string
+		yLabel: string,
+		
 	) => {
+console.log(srOnly)
+		
 		return (
-			<table className='sr-only'>
-				<thead>
+			<table >
+				<thead className={srOnly}>
 					<tr>
 						<th>{xLabel}</th>
 						<th>{yLabel}</th>
