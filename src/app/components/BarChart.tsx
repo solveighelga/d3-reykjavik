@@ -75,7 +75,7 @@ export const BarChart = <T, K extends keyof T>({
 	const {
 		width = 872,
 		height = 662,
-		margin = { top: 50, right: 20, bottom: -30, left: -30 },
+		margin = { top: 50, right: 20, bottom: -40, left: -30 },
 		padding = 0.3,
 		yAxisOptions,
 		xAxisOptions,
@@ -161,12 +161,14 @@ export const BarChart = <T, K extends keyof T>({
 		if (!selection) {
 			setSelection(d3.select(svgRef.current));
 		} else {
-			//defining the chart container
+			//defining the chart container. ARIA = role: img, aria-label: summarize is short what the image contains.
 			selection
 				.attr("class", "svg-container")
 				.attr("width", width)
 				.attr("height", height)
 				.style("padding", "none")
+				.attr("role", "graphics-document")
+				.attr("aria-describedby", "summary of the bar chart")
 				.append("rect")
 				.attr("class", "svg-background")
 				.attr("width", width)
@@ -271,8 +273,8 @@ export const BarChart = <T, K extends keyof T>({
 				.enter()
 				//append a rect element to the selection
 				.append("rect")
-				.attr("tabindex", "0")
 				.attr("class", "bar")
+				.attr("tabindex", "0")
 				.attr("height", "0")
 				.attr(
 					"transform",
@@ -303,6 +305,7 @@ export const BarChart = <T, K extends keyof T>({
 						margin.top +
 						basePadding
 				)
+				.attr("role", "datapoint")
 				.attr("width", xScale.bandwidth())
 				//set the height of the rect element to the scaled value of the data
 				.transition()
@@ -341,6 +344,7 @@ export const BarChart = <T, K extends keyof T>({
 				.attr("height", (d) => chartHeight - yScale(yAccessor(d)))
 				//set the width of the rect element to 20 - constant
 				//set the fill color of the rect element to blue
+				.attr("role", "datavalue")
 				.attr(
 					"fill",
 					highContrast
@@ -353,8 +357,10 @@ export const BarChart = <T, K extends keyof T>({
 						? "var(--rectStrokeHighContrast)"
 						: "var(--rectStroke)"
 				)
-				.style("stroke-width", "1");
-
+				.style("stroke-width", "1")
+				.attr("aria-labelledby", (d) => "year-" + d[xAccessor] + "amount-" + d[yAccessor]);
+				
+			// Data displayed on top of bars
 			selection
 				.append("g")
 				.attr("class", "bar-label")
@@ -423,10 +429,10 @@ export const BarChart = <T, K extends keyof T>({
 	) => {
 		return (
 			<table className="sr-only">
+				<caption>{summary}</caption>
 				<thead >
 					<tr>
-						<th>{xLabel}</th>
-						<th>{yLabel}</th>
+						<th>{xLabel}</th><th>{yLabel}</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -452,6 +458,8 @@ export const BarChart = <T, K extends keyof T>({
 					checked={highContrast}
 					onChange={handleChange}
 					className="inputContrast"
+					role="checkbox"
+					aria-label="Check box to change bar graph to high contrast"
 				/>
 				<label className="checkboxLabel">
 					High Contrast
@@ -461,13 +469,16 @@ export const BarChart = <T, K extends keyof T>({
 
 			<h2 className='BarChart__title'>{title}</h2>
 			<desc id='chartSummary'>{summary}</desc>
+			<a className="skip-link" href="#new__graph">Skip to Fjarhagsadstod eftir kyni</a>
 			<svg
 				ref={svgRef}
 				role='figure'
 				aria-labelledby='chartSummary'
 				tabIndex={1}
 			/>
+			<div id="new__graph"></div>
 			{crateTable(data, xAccessor, yAccessor, xLabel, yLabel)}
 		</div>
+		
 	);
 };
