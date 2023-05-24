@@ -70,12 +70,12 @@ export const BarChart = <T, K extends keyof T>({
 		setHighContrast(!highContrast);
 	  };
 	//used to make sure that Axis labels are not cut off
-	const basePadding = 32;
+	const basePadding = 40;
 	//taking options from the props and setting default values
 	const {
 		width = 872,
 		height = 662,
-		margin = { top: 50, right: 20, bottom: 60, left: 60 },
+		margin = { top: 50, right: 20, bottom: -30, left: -30 },
 		padding = 0.3,
 		yAxisOptions,
 		xAxisOptions,
@@ -166,6 +166,7 @@ export const BarChart = <T, K extends keyof T>({
 				.attr("class", "svg-container")
 				.attr("width", width)
 				.attr("height", height)
+				.style("padding", "none")
 				.append("rect")
 				.attr("class", "svg-background")
 				.attr("width", width)
@@ -195,19 +196,6 @@ export const BarChart = <T, K extends keyof T>({
 						margin.top + basePadding
 					})`
 				);
-
-			//.attr("x", '740') // Adjust the x position as needed
-			//.attr(
-			//	"y", '25') // Adjust the y position as needed
-			//.attr('text-anchor', 'middle');
-
-			//.append(‘text’)
-			//.attr(‘x’, (d) => yScale(yAccessor(d)))
-			// .attr(‘y’, (d) => yScale(yAccessor(d)))
-			// .attr(‘text-anchor’, ‘middle’)
-			// .text(yAccessor)
-
-			//
 
 			// X-axis label
 			selection
@@ -393,28 +381,6 @@ export const BarChart = <T, K extends keyof T>({
 
 				.text(yAccessor);
 
-			//const rectValue = selection
-			//Displaying data value on bars
-			// .append('text')
-			// .attr("x", (d) => xScale(xAccessor);
-			//set the y position of the rect element to the scaled value of the data
-			//.attr("y", (d) => chartHeight + margin.bottom + margin.top +basePadding)
-			//.attr("text-anchor", "middle")
-			//.text(yAccessor);
-
-			//.append(‘text’)
-			//.attr(‘x’, (d) => xScale(xAccessor(d)))
-			// .attr(‘y’, (d) => yScale(yAccessor(d)))
-			// .attr(‘text-anchor’, ‘middle’)
-			// .text(yAccessor)
-
-			// .append("text")
-			// 	.text((d) => d)
-			// 	.attr("x", (d) => xScale(xAccessor(d)) + xScale.bandwidth() / 2)
-			// 	.attr("y", (d) => yScale(yAccessor(d)) + margin.top +basePadding + margin.bottom)
-			// 	.attr("text-anchor", "middle")
-			// 	.attr("fill", "black");
-
 			const xAxisGroup = selection
 				.append("g")
 				.attr("class", "x-axis")
@@ -479,6 +445,7 @@ export const BarChart = <T, K extends keyof T>({
 	return (
 		<div className='BarChart__container'>
 
+			{/* Checkbox to switch change the state of the chart from low contrast to high contrast */}
 			<div className="checkboxContainer">
 				<input 
 					type="checkbox"
