@@ -1,8 +1,8 @@
 "use client";
-
+//import './hideTable.css';
 import * as d3 from "d3";
 import { useEffect, useRef, useState } from "react";
-import {hannaVars, srOnly, css} from '@reykjavik/hanna-css'
+import {hannaVars, srOnly, css} from '@reykjavik/hanna-css';
 
 export interface xAxisOptions {
 	/**unit of the y axis. Decorator in form of tuple.  (e.g. xAxisUnit: ["$", "M"] will show $1M)*/
@@ -422,8 +422,8 @@ export const BarChart = <T, K extends keyof T>({
 		yLabel: string
 	) => {
 		return (
-			<table className='sr-only'>
-				<thead>
+			<table className="sr-only">
+				<thead >
 					<tr>
 						<th>{xLabel}</th>
 						<th>{yLabel}</th>
