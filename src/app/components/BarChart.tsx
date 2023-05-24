@@ -1,5 +1,5 @@
 "use client";
-import './hideTable.css';
+//import './hideTable.css';
 import * as d3 from "d3";
 import { useEffect, useRef, useState } from "react";
 import {hannaVars, srOnly, css} from '@reykjavik/hanna-css';
