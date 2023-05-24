@@ -10,7 +10,7 @@
 	--background-end-rgb: 255, 255, 255;
 
 	/* SVG Chart Colors */
-	--svgContainerColor: lightblue;
+	--svgContainerColor: white;
 	--chartCanvasColor: white;
 	--svgTextColor: black;
 	--yAxisTickColor: rgba(227, 229, 231, 1);
@@ -43,7 +43,7 @@ body {
 	overflow-x: hidden;
 }
 
-body {
+/* body {
 	color: rgb(var(--foreground-rgb));
 	background: linear-gradient(
 			to bottom,
@@ -51,7 +51,7 @@ body {
 			rgb(var(--background-end-rgb))
 		)
 		rgb(var(--background-start-rgb));
-}
+} */
 
 a {
 	color: inherit;
@@ -70,3 +70,90 @@ a {
 		transition: none !important;
 	}
 }
+
+
+/* Barchart Styling */
+.svg-container {
+	padding: none;
+}
+
+.BarChart__container {
+  display: flex;
+  flex-direction: column;
+  border: solid 1px #dddfe2;
+  padding: 40px;
+}
+
+.checkboxContainer {
+	padding: 0.75rem;
+    border: 1px solid #c7cbd0;
+	background-color: white;
+	box-sizing: border-box;
+    color: rgb(66, 66, 66);
+	width: 300px;
+	display: flex;
+	flex-direction: row;
+	align-items: end;
+	margin-left: 570px;
+}
+
+.checkboxLabel{
+	padding-left: 10px;
+	font-size: 16px;
+	font-weight: 400;
+}
+
+.inputContrast {
+	width: 1.25rem;
+    height: 1.25rem;
+	background: red;
+	cursor: pointer;
+}
+
+.BarChart__title {
+	font-size: 40px;
+	line-height: 50px;
+	font-weight: 700;
+}
+
+#chartSummary {
+	font-size: 16px;
+	line-height: 24px;
+	font-weight: 400;
+}
+
+.x-axis-label {
+	font-size: 20px;
+	line-height: 32px;
+	font-weight: 400;
+}
+
+.y-axis-label {
+	font-size: 20px;
+	line-height: 32px;
+	font-weight: 400;
+}
+
+.x-axis {
+	font-size:16px;
+	line-height: 20px;
+	font-weight: 400;
+}
+
+.bar-label {
+	font-size:12px;
+	line-height: 19px;
+	font-weight: 400;
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }

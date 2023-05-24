@@ -1,7 +1,8 @@
 "use client";
-
+//import './hideTable.css';
 import * as d3 from "d3";
 import { useEffect, useRef, useState } from "react";
+import {hannaVars, srOnly, css} from '@reykjavik/hanna-css';
 
 export interface xAxisOptions {
 	/**unit of the y axis. Decorator in form of tuple.  (e.g. xAxisUnit: ["$", "M"] will show $1M)*/
@@ -65,13 +66,16 @@ export const BarChart = <T, K extends keyof T>({
 	options,
 }: BarChartProps<T, K>) => {
 	const [highContrast, setHighContrast] = useState(false);
+	const handleChange = () => {
+		setHighContrast(!highContrast);
+	  };
 	//used to make sure that Axis labels are not cut off
-	const basePadding = 32;
+	const basePadding = 40;
 	//taking options from the props and setting default values
 	const {
 		width = 872,
 		height = 662,
-		margin = { top: 40, right: 20, bottom: 60, left: 60 },
+		margin = { top: 50, right: 20, bottom: -30, left: -30 },
 		padding = 0.3,
 		yAxisOptions,
 		xAxisOptions,
@@ -120,9 +124,10 @@ export const BarChart = <T, K extends keyof T>({
 	const yScale = d3
 		.scaleLinear()
 		//define the domain of the scale first number of the domain is the minimum value of the data and the second number is the maximum value of the data
-		.domain([0, d3.max(data, yAccessor) || 0])
+		.domain([0, (d3.max(data, yAccessor) || 0) * 1.1])
 		//define the range of the scale first number of the range is the minimum value of the svg and the second number is the maximum value of the svg. Svg canvas is mapped from top to bottom and left to right. So the minimum value of the svg is the height of the svg and the maximum value of the svg is 0 to make bars appear from the bottom
 		.range([chartHeight, 0]);
+
 
 	//define a XScale to scale the data to the svg canvas width
 	const xScale = d3
@@ -141,7 +146,8 @@ export const BarChart = <T, K extends keyof T>({
 		.axisBottom(xScale)
 		.tickSizeInner(xAxisTickSize)
 		.tickPadding(xAxisTickPadding)
-		.tickFormat((d) => `${xAxisUnit[0]} ${d} ${xAxisUnit[1]}`);
+		.tickFormat((d) => `${xAxisUnit[0]} ${d} ${xAxisUnit[1]}`)
+		.tickSizeOuter(0);
 
 	const yAxis = d3
 		.axisLeft(yScale)
@@ -160,6 +166,7 @@ export const BarChart = <T, K extends keyof T>({
 				.attr("class", "svg-container")
 				.attr("width", width)
 				.attr("height", height)
+				.style("padding", "none")
 				.append("rect")
 				.attr("class", "svg-background")
 				.attr("width", width)
@@ -190,19 +197,6 @@ export const BarChart = <T, K extends keyof T>({
 					})`
 				);
 
-			//.attr("x", '740') // Adjust the x position as needed
-			//.attr(
-			//	"y", '25') // Adjust the y position as needed
-			//.attr('text-anchor', 'middle');
-
-			//.append(‘text’)
-			//.attr(‘x’, (d) => yScale(yAccessor(d)))
-			// .attr(‘y’, (d) => yScale(yAccessor(d)))
-			// .attr(‘text-anchor’, ‘middle’)
-			// .text(yAccessor)
-
-			//
-
 			// X-axis label
 			selection
 				.append("text")
@@ -230,7 +224,7 @@ export const BarChart = <T, K extends keyof T>({
 				.append("text")
 				.text("Fjöldi á ári")
 				.attr("class", "y-axis-label")
-				.attr("x", -(chartHeight / 2) - margin.top + basePadding) // Adjust the Y(!) position as needed
+				.attr("x", -(chartHeight / 2) - margin.top - basePadding) // Adjust the Y(!) position as needed
 				.attr("y", yAxisTickPadding + margin.left + 0.75 * basePadding) // Adjust the X(!) position as needed
 				.attr("text-anchor", "middle")
 				.attr("transform", `rotate(-90)`)
@@ -387,28 +381,6 @@ export const BarChart = <T, K extends keyof T>({
 
 				.text(yAccessor);
 
-			//const rectValue = selection
-			//Displaying data value on bars
-			// .append('text')
-			// .attr("x", (d) => xScale(xAccessor);
-			//set the y position of the rect element to the scaled value of the data
-			//.attr("y", (d) => chartHeight + margin.bottom + margin.top +basePadding)
-			//.attr("text-anchor", "middle")
-			//.text(yAccessor);
-
-			//.append(‘text’)
-			//.attr(‘x’, (d) => xScale(xAccessor(d)))
-			// .attr(‘y’, (d) => yScale(yAccessor(d)))
-			// .attr(‘text-anchor’, ‘middle’)
-			// .text(yAccessor)
-
-			// .append("text")
-			// 	.text((d) => d)
-			// 	.attr("x", (d) => xScale(xAccessor(d)) + xScale.bandwidth() / 2)
-			// 	.attr("y", (d) => yScale(yAccessor(d)) + margin.top +basePadding + margin.bottom)
-			// 	.attr("text-anchor", "middle")
-			// 	.attr("fill", "black");
-
 			const xAxisGroup = selection
 				.append("g")
 				.attr("class", "x-axis")
@@ -450,8 +422,8 @@ export const BarChart = <T, K extends keyof T>({
 		yLabel: string
 	) => {
 		return (
-			<table className='sr-only'>
-				<thead>
+			<table className="sr-only">
+				<thead >
 					<tr>
 						<th>{xLabel}</th>
 						<th>{yLabel}</th>
@@ -469,12 +441,23 @@ export const BarChart = <T, K extends keyof T>({
 		);
 	};
 
+
 	return (
 		<div className='BarChart__container'>
-			<button onClick={() => setHighContrast((prev) => !prev)}>
-				{" "}
-				{highContrast ? "High Contrast" : "Low Contrast"}
-			</button>
+
+			{/* Checkbox to switch change the state of the chart from low contrast to high contrast */}
+			<div className="checkboxContainer">
+				<input 
+					type="checkbox"
+					checked={highContrast}
+					onChange={handleChange}
+					className="inputContrast"
+				/>
+				<label className="checkboxLabel">
+					High Contrast
+				</label>
+				
+			</div>
 
 			<h2 className='BarChart__title'>{title}</h2>
 			<desc id='chartSummary'>{summary}</desc>
