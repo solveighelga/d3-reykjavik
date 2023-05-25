@@ -349,8 +349,8 @@ export const BarChart = <T, K extends keyof T>({
 				)
 				.attr("height", (d) => chartHeight - yScale(yAccessor(d)))
 				//set the width of the rect element to 20 - constant
-				//set the fill color of the rect element to blue
 				.attr("role", "datavalue")
+				//set the fill color of the rect element to blue
 				.attr(
 					"fill",
 					highContrast
@@ -364,7 +364,9 @@ export const BarChart = <T, K extends keyof T>({
 						: "var(--rectStroke)"
 				)
 				.style("stroke-width", "1")
-				.attr("aria-datavalues", (d) => "year-" + xAccessor(d) + "amount-" + yAccessor(d));
+				.attr("aria-datavalues", 
+					(d) => "year-" + xAccessor(d) + "amount-" + yAccessor(d)
+				);
 				
 			// Data displayed on top of bars
 			selection
@@ -455,7 +457,7 @@ export const BarChart = <T, K extends keyof T>({
 
 
 	return (
-		<div className='BarChart__container' tabIndex={0} role="graphics-doc" aria-labelledby="chart__title" aria-describedby="chart__summary">
+		<div className='BarChart__container' tabIndex={0} role="graphics-document" aria-labelledby="chart__title" aria-describedby="chart__summary">
 
 				{nextSectionId && <a className="skip-link" href={`#${nextSectionId}`}>Skip to next section</a>}
 			{/* Checkbox to switch change the state of the chart from low contrast to high contrast */}
@@ -479,7 +481,7 @@ export const BarChart = <T, K extends keyof T>({
 				<svg
 					ref={svgRef}
 					tabIndex={0}
-					role="figure"
+					role="graphics-document figure"
 				/>
 				<figcaption 
 					id='chart__description'
