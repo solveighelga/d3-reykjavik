@@ -2,7 +2,7 @@
 //import './hideTable.css';
 import * as d3 from "d3";
 import { useEffect, useRef, useState } from "react";
-import {hannaVars, srOnly, css} from '@reykjavik/hanna-css';
+import { hannaVars, srOnly, css } from "@reykjavik/hanna-css";
 
 export interface xAxisOptions {
 	/**unit of the y axis. Decorator in form of tuple.  (e.g. xAxisUnit: ["$", "M"] will show $1M)*/
@@ -68,7 +68,7 @@ export const BarChart = <T, K extends keyof T>({
 	const [highContrast, setHighContrast] = useState(false);
 	const handleChange = () => {
 		setHighContrast(!highContrast);
-	  };
+	};
 	//used to make sure that Axis labels are not cut off
 	const basePadding = 40;
 	//taking options from the props and setting default values
@@ -127,7 +127,6 @@ export const BarChart = <T, K extends keyof T>({
 		.domain([0, (d3.max(data, yAccessor) || 0) * 1.1])
 		//define the range of the scale first number of the range is the minimum value of the svg and the second number is the maximum value of the svg. Svg canvas is mapped from top to bottom and left to right. So the minimum value of the svg is the height of the svg and the maximum value of the svg is 0 to make bars appear from the bottom
 		.range([chartHeight, 0]);
-
 
 	//define a XScale to scale the data to the svg canvas width
 	const xScale = d3
@@ -358,8 +357,11 @@ export const BarChart = <T, K extends keyof T>({
 						: "var(--rectStroke)"
 				)
 				.style("stroke-width", "1")
-				.attr("aria-labelledby", (d) => "year-" + d[xAccessor] + "amount-" + d[yAccessor]);
-				
+				.attr(
+					"aria-label",
+					(d) => "year-" + xAccessor(d) + "amount-" + yAccessor(d)
+				);
+
 			// Data displayed on top of bars
 			selection
 				.append("g")
@@ -428,11 +430,12 @@ export const BarChart = <T, K extends keyof T>({
 		yLabel: string
 	) => {
 		return (
-			<table className="sr-only">
+			<table className='sr-only'>
 				<caption>{summary}</caption>
-				<thead >
+				<thead>
 					<tr>
-						<th>{xLabel}</th><th>{yLabel}</th>
+						<th>{xLabel}</th>
+						<th>{yLabel}</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -447,38 +450,34 @@ export const BarChart = <T, K extends keyof T>({
 		);
 	};
 
-
 	return (
 		<div className='BarChart__container'>
-
 			{/* Checkbox to switch change the state of the chart from low contrast to high contrast */}
-			<div className="checkboxContainer">
-				<input 
-					type="checkbox"
+			<div className='checkboxContainer'>
+				<input
+					type='checkbox'
 					checked={highContrast}
 					onChange={handleChange}
-					className="inputContrast"
-					role="checkbox"
-					aria-label="Check box to change bar graph to high contrast"
+					className='inputContrast'
+					role='checkbox'
+					aria-label='Check box to change bar graph to high contrast'
 				/>
-				<label className="checkboxLabel">
-					High Contrast
-				</label>
-				
+				<label className='checkboxLabel'>High Contrast</label>
 			</div>
 
 			<h2 className='BarChart__title'>{title}</h2>
 			<desc id='chartSummary'>{summary}</desc>
-			<a className="skip-link" href="#new__graph">Skip to Fjarhagsadstod eftir kyni</a>
+			<a className='skip-link' href='#new__graph'>
+				Skip to Fjarhagsadstod eftir kyni
+			</a>
 			<svg
 				ref={svgRef}
 				role='figure'
 				aria-labelledby='chartSummary'
 				tabIndex={1}
 			/>
-			<div id="new__graph"></div>
+			<div id='new__graph'></div>
 			{crateTable(data, xAccessor, yAccessor, xLabel, yLabel)}
 		</div>
-		
 	);
 };
