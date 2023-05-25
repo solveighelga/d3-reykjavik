@@ -118,7 +118,8 @@ export default function Home() {
 			<BarChart
 				title='Data Karlar'
 				data={dataKarlar}
-				summary='Fjárhagsaðstoð til framfærslu'
+				summary='Visable on screen'
+				description='srOnly, valuemin and valuemax'
 				xAccessor={(d) => {
 					return d.artal.toString();
 				}}

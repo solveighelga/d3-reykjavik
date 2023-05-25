@@ -53,6 +53,10 @@ export interface BarChartProps<T, K extends keyof T> {
 	yAccessor: (d: T) => T[K] extends number ? T[K] : any;
 	/**Options to customize the chart.*/
 	options?: BarChartOptions;
+	/** id of the next section to give the user the option to skip the graph*/
+	nextSectionId?: string;
+	/** Description of the chart for srOnly*/
+	description: string;
 }
 
 export const BarChart = <T, K extends keyof T>({
@@ -64,6 +68,8 @@ export const BarChart = <T, K extends keyof T>({
 	xLabel,
 	yLabel,
 	options,
+	nextSectionId,
+	description,
 }: BarChartProps<T, K>) => {
 	const [highContrast, setHighContrast] = useState(false);
 	const handleChange = () => {
@@ -167,8 +173,6 @@ export const BarChart = <T, K extends keyof T>({
 				.attr("width", width)
 				.attr("height", height)
 				.style("padding", "none")
-				.attr("role", "graphics-document")
-				.attr("aria-describedby", "summary of the bar chart")
 				.append("rect")
 				.attr("class", "svg-background")
 				.attr("width", width)
@@ -262,7 +266,9 @@ export const BarChart = <T, K extends keyof T>({
 						: "var(--yAxisTickColor)"
 				);
 
-			selection.selectAll(".domain").attr("stroke", "none");
+			selection
+			.selectAll(".domain")
+			.attr("stroke", "none");
 
 			selection
 				.append("g")
@@ -358,7 +364,7 @@ export const BarChart = <T, K extends keyof T>({
 						: "var(--rectStroke)"
 				)
 				.style("stroke-width", "1")
-				.attr("aria-labelledby", (d) => "year-" + d[xAccessor] + "amount-" + d[yAccessor]);
+				.attr("aria-datavalues", (d) => "year-" + xAccessor(d) + "amount-" + yAccessor(d));
 				
 			// Data displayed on top of bars
 			selection
@@ -449,34 +455,39 @@ export const BarChart = <T, K extends keyof T>({
 
 
 	return (
-		<div className='BarChart__container'>
+		<div className='BarChart__container' tabIndex={0} role="graphics-doc" aria-labelledby="chart__title" aria-describedby="chart__summary">
 
+				{nextSectionId && <a className="skip-link" href={`#${nextSectionId}`}>Skip to next section</a>}
 			{/* Checkbox to switch change the state of the chart from low contrast to high contrast */}
 			<div className="checkboxContainer">
 				<input 
 					type="checkbox"
 					checked={highContrast}
 					onChange={handleChange}
-					className="inputContrast"
+					id="inputContrast"
 					role="checkbox"
-					aria-label="Check box to change bar graph to high contrast"
+					aria-label="Change bar graph to high or low contrast"
 				/>
-				<label className="checkboxLabel">
+				<label htmlFor="inputContrast" className="checkboxLabel">
 					High Contrast
 				</label>
-				
 			</div>
 
-			<h2 className='BarChart__title'>{title}</h2>
-			<desc id='chartSummary'>{summary}</desc>
-			<a className="skip-link" href="#new__graph">Skip to Fjarhagsadstod eftir kyni</a>
-			<svg
-				ref={svgRef}
-				role='figure'
-				aria-labelledby='chartSummary'
-				tabIndex={1}
-			/>
-			<div id="new__graph"></div>
+			<h2 id='chart__title'>{title}</h2>
+			<figure>
+				<figcaption id='chart__summary'>{summary}</figcaption>
+				<svg
+					ref={svgRef}
+					tabIndex={0}
+					role="figure"
+				/>
+				<figcaption 
+					id='chart__description'
+
+				>
+					{description}
+				</figcaption>
+			</figure>
 			{crateTable(data, xAccessor, yAccessor, xLabel, yLabel)}
 		</div>
 		

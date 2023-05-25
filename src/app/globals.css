@@ -103,14 +103,14 @@ a {
 	font-weight: 400;
 }
 
-.inputContrast {
+#inputContrast {
 	width: 1.25rem;
     height: 1.25rem;
 	background: red;
 	cursor: pointer;
 }
 
-.BarChart__title {
+#chart__title {
 	font-size: 40px;
 	line-height: 50px;
 	font-weight: 700;
@@ -158,11 +158,11 @@ a {
     border: 0;
   }
 
-  .skip-to-content-link {
+  /* .skip-to-content-link {
 	left: 50%;
 	position: absolute;
 	transform: translateY(-100%);
-  }
+  } */
 
   /* .skip-to-content-link {
 	background: #e77e23;
@@ -173,6 +173,6 @@ a {
 	transform: translateY(-100%);
   } */
   
-  .skip-to-content-link:focus {
+  /* .skip-to-content-link:focus {
 	transform: translateY(0%);
-  }
+  } */
